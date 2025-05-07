@@ -25,17 +25,17 @@ public class UsuarioController {
         return usuarioService.saveUsuario(usuario);
     }
 
-    @GetMapping("{id}")
+    @GetMapping("/{id}")
     public Model_Usuario buscarPorId(@PathVariable int id){
         return usuarioService.getUsuarioId(id);
     }
 
-    @PutMapping("{id}")
+    @PutMapping("/{id}")
     public Model_Usuario modificarUsuario(@PathVariable int id, @RequestBody Model_Usuario usuario){
         return usuarioService.updateUsuario(usuario);
     }
 
-    @DeleteMapping("{id}")
+    @DeleteMapping("/{id}")
     public String eliminarUsuario(@PathVariable int id){
         return usuarioService.deleteUsuario(id);
     }
