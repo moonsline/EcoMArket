@@ -69,10 +69,14 @@ public class UsuarioRepository {
     }
 
     //Metodo que elimina usuario mediante su id
-    public void eliminarUsuario(int idUsuario) {
+    public String eliminarUsuario(int idUsuario) {
         Model_Usuario usuario = buscarPorId(idUsuario);
+
         if (usuario != null) {
             usuarios.remove(usuario);
+            return "Usuario removido com sucesso!";
+        }else{
+            return "No encontrado";
         }
     }
 }
