@@ -1,19 +1,26 @@
 package com.example.EcoMarket.Model;
 
-import jakarta.persistence.Entity;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-public class Model_Cliente extends Model_Usuario {
+public class Model_Cliente  {
 
-
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int idCliente;
+    private String nombre;
+    private String email;
+    private String password;
+    private String rol;
     private String direccion;
-    private List<String> historialPedidos;
+
+
 
 
 }

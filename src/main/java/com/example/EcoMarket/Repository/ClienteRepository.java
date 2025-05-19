@@ -1,16 +1,9 @@
 package com.example.EcoMarket.Repository;
 
 import com.example.EcoMarket.Model.Model_Cliente;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
-import java.util.ArrayList;
-import java.util.List;
-
-public class ClienteRepository {
-
-    private List<Model_Cliente> clientes = new ArrayList<>();
-
-    public List<Model_Cliente> obtenerClientes() {
-        return clientes;
-    }
-
+@Repository
+public interface ClienteRepository extends JpaRepository<Model_Cliente, Integer> {
 }
