@@ -1,6 +1,5 @@
 package com.example.EcoMarket.Service;
 
-import com.example.EcoMarket.Model.Model_Proveedor;
 import com.example.EcoMarket.Model.Model_Usuario;
 import com.example.EcoMarket.Repository.UsuarioRepository;
 
@@ -13,64 +12,25 @@ import java.util.List;
 public class UsuarioService {
 
     @Autowired
-    UsuarioRepository usuarioRepository;
+    private UsuarioRepository usuarioRepository;
 
-    public String agregarUsuario(Model_Usuario usuario) {
-        usuarioRepository.save(usuario);
-        return "Usuario agregado";
+    public List<Model_Usuario> getUsuarios(){
+        return usuarioRepository.obtenerUsuarios();
     }
-
-    public String listarUsuarios() {
-        String output = "";
-        for (Model_Usuario usuario : usuarioRepository.findAll()) {
-            output += "ID usuario: " +usuario.getId()+ "\n";
-            output += "Nombre usuario: " +usuario.getNombre()+ "\n";
-            output += "Email usuario: " +usuario.getEmail()+ "\n";
-            output += "Password usuario: " +usuario.getPassword()+ "\n";
-            output += "Rol usuario: " +usuario.getRol()+ "\n";
-        }
-        if(output.isEmpty()) {
-            return "No se encontro el usuario";
-        }else {
-            return output;
-        }
+    public Model_Usuario saveUsuario(Model_Usuario usuario){
+        return usuarioRepository.agregarUsuario(usuario);
     }
-
-    public String obtenerUsuario(int id) {
-        String output = "";
-        if(usuarioRepository.existsById(id)) {
-            Model_Usuario usuario = usuarioRepository.findById(id).get();
-            output += "ID usuario: " +usuario.getId()+ "\n";
-            output += "Nombre usuario: " +usuario.getNombre()+ "\n";
-            output += "Email usuario: " +usuario.getEmail()+ "\n";
-            output += "Password usuario: " +usuario.getPassword()+ "\n";
-            output += "Rol usuario: " +usuario.getRol()+ "\n";
-            return output;
-        }else {
-            return "No se encontro el usuario";
-        }
+    public Model_Usuario getUsuarioId(int id){
+        return usuarioRepository.buscarPorId(id);
     }
-
-    public String eliminarUsuario(int id) {
-        if(usuarioRepository.existsById(id)) {
-            usuarioRepository.deleteById(id);
-            return "Usuario eliminado";
-        }else{
-            return "No se encontro el usuario";
-        }
+    public Model_Usuario getUsuarioByEmail(String email){
+        return usuarioRepository.buscarPorEmail(email);
     }
-
-    public String actualizarUsuario(int id, Model_Usuario usuario) {
-        if(usuarioRepository.existsById(id)) {
-            Model_Usuario buscado = usuarioRepository.findById(id).get();
-            buscado.setNombre(usuario.getNombre());
-            buscado.setEmail(usuario.getEmail());
-            buscado.setPassword(usuario.getPassword());
-            buscado.setRol(usuario.getRol());
-            usuarioRepository.save(buscado);
-            return "Usuario actualizado";
-        }else{
-            return "No se encontro el usuario";
-        }
+    public Model_Usuario updateUsuario(Model_Usuario usuario){
+        return usuarioRepository.actualizarUsuario(usuario);
+    }
+    public String deleteUsuario(int id){
+        usuarioRepository.eliminarUsuario(id);
+        return "Usuario eliminado";
     }
 }
