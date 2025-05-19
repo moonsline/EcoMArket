@@ -14,7 +14,7 @@ public class UsuarioRepository {
     private List<Model_Usuario> usuarios = new ArrayList<>();
 
 
-    //Metodo que retorna todos los libros
+    //Método que retorna todos los libros
     public List<Model_Usuario> obtenerUsuarios() {
         return usuarios;
     }
