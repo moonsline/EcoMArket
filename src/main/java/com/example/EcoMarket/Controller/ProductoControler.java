@@ -1,5 +1,6 @@
 package com.example.EcoMarket.Controller;
 
+
 import com.example.EcoMarket.Model.Model_Producto;
 import com.example.EcoMarket.Service.ProductoService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,14 +9,14 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/av1/productos")
-public class ProductoController {
+@RequestMapping("/api/v1/productos")
+public class ProductoControler {
 
     @Autowired
     private ProductoService productoService;
 
     @GetMapping
-    public List<Model_Producto> obtenerProductos(){
+    public List<Model_Producto> obtenerProducto(){
         return productoService.getProductos();
     }
 
@@ -25,6 +26,11 @@ public class ProductoController {
     }
 
     @GetMapping("/{id}")
+    public Model_Producto buscarId(@PathVariable int id){
+        return productoService.getProductoId(id);
+    }
+
+    @PutMapping("/{id}")
     public Model_Producto modificarProducto(@PathVariable int id, @RequestBody Model_Producto producto){
         return productoService.updateProducto(producto);
     }
