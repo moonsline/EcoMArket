@@ -16,28 +16,27 @@ public class ProductoControler {
     private ProductoService productoService;
 
     @GetMapping
-    public List<Model_Producto> obtenerProducto(){
-        return productoService.getProductos();
+    public String getPoducto(){
+        return productoService.listaProducto();
     }
-
     @PostMapping
-    public Model_Producto guardarProducto(@RequestBody Model_Producto producto){
-        return productoService.saveProducto(producto);
+    public String postProductos(@RequestBody Model_Producto producto){
+        return productoService.agregarProducto(producto);
     }
 
     @GetMapping("/{id}")
-    public Model_Producto buscarId(@PathVariable int id){
-        return productoService.getProductoId(id);
-    }
-
-    @PutMapping("/{id}")
-    public Model_Producto modificarProducto(@PathVariable int id, @RequestBody Model_Producto producto){
-        return productoService.updateProducto(producto);
+    public String getProductoById(@PathVariable int id){
+        return productoService.obtenerProducto(id);
     }
 
     @DeleteMapping("/{id}")
-    public String eliminarProducto(@PathVariable int id){
-        return productoService.deleteProducto(id);
+    public String deleteProductosById(@PathVariable int id){
+        return productoService.eliminarProducto(id);
+    }
+
+    @PutMapping("/{id}")
+    public String updateProductoById(@PathVariable int id, @RequestBody Model_Producto producto){
+        return productoService.actualizarProducto(id, producto);
     }
 
 }
