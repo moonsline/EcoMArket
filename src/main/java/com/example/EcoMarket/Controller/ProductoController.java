@@ -6,11 +6,9 @@ import com.example.EcoMarket.Service.ProductoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
 @RequestMapping("/api/v1/productos")
-public class ProductoControler {
+public class ProductoController {
 
     @Autowired
     private ProductoService productoService;
