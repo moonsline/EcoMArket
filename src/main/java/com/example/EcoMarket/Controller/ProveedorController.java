@@ -34,7 +34,7 @@ public class ProveedorController {
     }
 
     @PutMapping("/{id}")
-    public String upddateProveedoreById(@PathVariable int id, @RequestBody Model_Proveedor proveedor) {
+    public String updateProveedorById(@PathVariable int id, @RequestBody Model_Proveedor proveedor) {
         return proveedorService.actualizarProveedor(id, proveedor);
     }
 }
