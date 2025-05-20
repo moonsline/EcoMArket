@@ -39,7 +39,7 @@ public class UsuarioService {
         String output = "";
         if (usuarioRepository.existsById(id)) {
             Model_Usuario usuario = usuarioRepository.findById(id).get();
-            output += "ID usuario: "+usuario.getNombre() + "\n";
+            output += "ID usuario: "+usuario.getIdUsuario() + "\n";
             output += "Nombre usuario: "+usuario.getNombre() + "\n";
             output += "Email usuario: "+usuario.getEmail() + "\n";
             output += "Password usuario: "+usuario.getPassword() + "\n";
