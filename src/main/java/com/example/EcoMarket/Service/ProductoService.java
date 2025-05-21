@@ -49,7 +49,7 @@ public class ProductoService {
 
     public String eliminarProducto(int id){
         if(productoRepository.existsById(id)){
-            productoRepository.existsById(id);
+            productoRepository.deleteById(id);
             return "Producto eliminado";
         }else{
             return "No se encontro el producto";
