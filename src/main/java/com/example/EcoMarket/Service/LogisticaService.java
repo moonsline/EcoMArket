@@ -61,6 +61,7 @@ public class LogisticaService {
             buscado.setEmail(logistica.getEmail());
             buscado.setPassword(logistica.getPassword());
             buscado.setRol(logistica.getRol());
+            logisticaRepository.save(buscado);
             return"Usuario logisitca actualizado";
         }else{
             return"No se encontro el usuaro logistica";

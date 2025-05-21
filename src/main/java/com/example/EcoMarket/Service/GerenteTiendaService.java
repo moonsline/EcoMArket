@@ -63,6 +63,7 @@ public class GerenteTiendaService {
             buscado.setEmail(gerenteTienda.getEmail());
             buscado.setPassword(gerenteTienda.getPassword());
             buscado.setRol(gerenteTienda.getPassword());
+            gerenteTiendaRepository.save(buscado);
             return"Gerente actualizado";
         }else{
             return"No se encontro el gerente";

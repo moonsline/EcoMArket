@@ -63,6 +63,7 @@ public class EmpleadoVentasService {
             buscado.setEmail(empleadoVentas.getEmail());
             buscado.setPassword(empleadoVentas.getPassword());
             buscado.setRol(empleadoVentas.getRol());
+            empleadoVentasRepository.save(buscado);
             return "Empleado actualzado";
         }else{
             return "No se encontro el empleado";
