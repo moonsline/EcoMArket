@@ -19,12 +19,12 @@ public class ClienteService {
     public String listarCliente() {
         String output ="";
         for (Model_Cliente cliente : clienteRepository.findAll()){
-            output += "ID Cliente:" +cliente.getIdCliente()+ "\n";
-            output += "Nombre Cliente:" +cliente.getNombre()+ "\n";
-            output += "Email Cliente:" +cliente.getEmail()+ "\n";
-            output += "Password Cliente:" +cliente.getPassword()+"\n";
-            output += "Rol Cliente:" +cliente.getRol()+ "\n";
-            output += "Direccion Cliente:" +cliente.getDireccion()+ "\n";
+            output += "ID Cliente: " +cliente.getIdCliente()+ "\n";
+            output += "Nombre Cliente: " +cliente.getNombre()+ "\n";
+            output += "Email Cliente: " +cliente.getEmail()+ "\n";
+            output += "Password Cliente: " +cliente.getPassword()+"\n";
+            output += "Rol Cliente: " +cliente.getRol()+ "\n";
+            output += "Direccion Cliente: " +cliente.getDireccion()+ "\n";
         }
         if (output.isEmpty()){
             return "No se encontro el cliente";
@@ -37,11 +37,11 @@ public class ClienteService {
         String output ="";
         if (clienteRepository.existsById(idCliente)){
             Model_Cliente cliente = clienteRepository.findById(idCliente).get();
-            output += "ID Cliente:" +cliente.getIdCliente()+ "\n";
-            output += "Nombre:" +cliente.getNombre()+ "\n";
-            output += "Password Cliente:" +cliente.getPassword()+"\n";
-            output += "Rol:" +cliente.getRol()+ "\n";
-            output += "Direccion:" +cliente.getDireccion()+ "\n";
+            output += "ID Cliente: " +cliente.getIdCliente()+ "\n";
+            output += "Nombre: " +cliente.getNombre()+ "\n";
+            output += "Password Cliente: " +cliente.getPassword()+"\n";
+            output += "Rol: " +cliente.getRol()+ "\n";
+            output += "Direccion: " +cliente.getDireccion()+ "\n";
             return output;
         }else{
             return "No se encontro el cliente";

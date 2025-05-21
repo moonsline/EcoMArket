@@ -22,11 +22,11 @@ public class AdministradorService {
     public String listaAdminstrador(){
         String output = "";
         for (Model_Administrador administrador: administradorRepository.findAll()){
-            output += "ID Administrador:" + administrador.getIdAdmin()+"\n";
+            output += "ID Administrador: " + administrador.getIdAdmin()+"\n";
             output += "Nombre Adminstrador: " + administrador.getNombre()+"\n";
-            output += "Email Adminstrador :" + administrador.getEmail()+"\n";
-            output += "Password Administrador:" + administrador.getPassword()+"\n";
-            output += "Rol Adminstrador" + administrador.getRol()+"\n";
+            output += "Email Adminstrador : " + administrador.getEmail()+"\n";
+            output += "Password Administrador: " + administrador.getPassword()+"\n";
+            output += "Rol Adminstrador: " + administrador.getRol()+"\n";
         }
         if (output.isEmpty()){
             return "No se encontro el adminstrador";
@@ -39,11 +39,11 @@ public class AdministradorService {
         String output ="";
         if (administradorRepository.existsById(idAdmin)){
             Model_Administrador administrador = administradorRepository.findById(idAdmin).get();
-            output += "ID Administrador:" + administrador.getIdAdmin()+ "\n";
+            output += "ID Administrador: " + administrador.getIdAdmin()+ "\n";
             output += "Nombre Adminstrador: " + administrador.getNombre()+"\n";
-            output += "Email Adminstrador :" + administrador.getEmail()+"\n";
-            output += "Password Administrador:" + administrador.getPassword()+"\n";
-            output += "Rol Adminstrador" + administrador.getRol()+"\n";
+            output += "Email Adminstrador : " + administrador.getEmail()+"\n";
+            output += "Password Administrador: " + administrador.getPassword()+"\n";
+            output += "Rol Adminstrador: " + administrador.getRol()+"\n";
             return output;
         }else{
             return "No se encontro el administrador";

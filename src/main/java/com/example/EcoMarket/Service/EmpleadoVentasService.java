@@ -19,11 +19,11 @@ public class EmpleadoVentasService {
     public String listarEmpleadoVentas(){
         String output ="";
         for (Model_EmpleadoVentas empleadoVentas : empleadoVentasRepository.findAll()){
-            output += "ID Empleado" + empleadoVentas.getIdEmpleado()+ "\n";
-            output += "Nombre Empleado" + empleadoVentas.getNombre()+ "\n";
-            output += "Email Empleado" + empleadoVentas.getEmail()+ "\n";
-            output += "Password empleado"+ empleadoVentas.getPassword()+ "\n";
-            output += "Rol Empleado"+ empleadoVentas.getRol()+ "\n";
+            output += "ID Empleado: " + empleadoVentas.getIdEmpleado()+ "\n";
+            output += "Nombre Empleado: " + empleadoVentas.getNombre()+ "\n";
+            output += "Email Empleado: " + empleadoVentas.getEmail()+ "\n";
+            output += "Password empleado: "+ empleadoVentas.getPassword()+ "\n";
+            output += "Rol Empleado: "+ empleadoVentas.getRol()+ "\n";
         }
         if (output.isEmpty()){
             return "No se encontro el empleado";
@@ -36,11 +36,11 @@ public class EmpleadoVentasService {
         String output = "";
         if (empleadoVentasRepository.existsById(idEmpleado)){
             Model_EmpleadoVentas empleadoVentas = empleadoVentasRepository.findById(idEmpleado).get();
-            output += "ID Empleado" + empleadoVentas.getIdEmpleado()+ "\n";
-            output += "Nombre Empleado" + empleadoVentas.getNombre()+ "\n";
-            output += "Email Empleado" + empleadoVentas.getEmail()+ "\n";
-            output += "Password empleado"+ empleadoVentas.getPassword()+ "\n";
-            output += "Rol Empleado"+ empleadoVentas.getRol()+ "\n";
+            output += "ID Empleado: " + empleadoVentas.getIdEmpleado()+ "\n";
+            output += "Nombre Empleado: " + empleadoVentas.getNombre()+ "\n";
+            output += "Email Empleado: " + empleadoVentas.getEmail()+ "\n";
+            output += "Password empleado: "+ empleadoVentas.getPassword()+ "\n";
+            output += "Rol Empleado: "+ empleadoVentas.getRol()+ "\n";
             return output;
         }else{
             return "No se encontro el empleado";

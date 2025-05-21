@@ -16,11 +16,11 @@ public class LogisticaService {
     public String listarLogistica(){
         String output ="";
         for(Model_Logistica logistica : logisticaRepository.findAll()){
-            output+="ID Logisitca"+logistica.getIdLogistica() +"\n";
-            output+="Nombre logistica"+logistica.getNombre() +"\n";
-            output+="Email logistica"+logistica.getEmail() +"\n";
-            output+="Password logistica"+logistica.getPassword() +"\n";
-            output+="Rol Logisitca"+logistica.getRol() +"\n";
+            output+="ID Logisitca: "+logistica.getIdLogistica() +"\n";
+            output+="Nombre logistica: "+logistica.getNombre() +"\n";
+            output+="Email logistica: "+logistica.getEmail() +"\n";
+            output+="Password logistica: "+logistica.getPassword() +"\n";
+            output+="Rol Logisitca: "+logistica.getRol() +"\n";
 
         }if(output.isEmpty()){
             return "No se encontro el usuario logisitca";
@@ -34,11 +34,11 @@ public class LogisticaService {
         String output ="";
         if (logisticaRepository.existsById(idLogistica)){
             Model_Logistica logistica = logisticaRepository.findById(idLogistica).get();
-            output+="ID Logisitca"+logistica.getIdLogistica() +"\n";
-            output+="Nombre logistica"+logistica.getNombre() +"\n";
-            output+="Email logistica"+logistica.getEmail() +"\n";
-            output+="Password logistica"+logistica.getPassword() +"\n";
-            output+="Rol Logisitca"+logistica.getRol() +"\n";
+            output+="ID Logisitca: "+logistica.getIdLogistica() +"\n";
+            output+="Nombre logistica: "+logistica.getNombre() +"\n";
+            output+="Email logistica: "+logistica.getEmail() +"\n";
+            output+="Password logistica: "+logistica.getPassword() +"\n";
+            output+="Rol Logisitca: "+logistica.getRol() +"\n";
             return output;
         }else{
             return"NO se encontro el usuario logisitca";

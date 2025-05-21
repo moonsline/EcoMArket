@@ -19,11 +19,11 @@ public class GerenteTiendaService {
     public String listarGerenteTienda(){
         String output ="";
         for(Model_GerenteTienda gerenteTienda :gerenteTiendaRepository.findAll()){
-            output+="ID gerente"+gerenteTienda.getIdGerente() +"\n";
-            output+="Nombre Gerente"+gerenteTienda.getNombre() +"\n";
-            output+="Email Gerente"+gerenteTienda.getEmail() +"\n";
-            output+="Password Gerente"+gerenteTienda.getPassword() +"\n";
-            output+="Rol Gerente"+gerenteTienda.getRol() +"\n";
+            output+="ID gerente: "+gerenteTienda.getIdGerente() +"\n";
+            output+="Nombre Gerente: "+gerenteTienda.getNombre() +"\n";
+            output+="Email Gerente: "+gerenteTienda.getEmail() +"\n";
+            output+="Password Gerente: "+gerenteTienda.getPassword() +"\n";
+            output+="Rol Gerente: "+gerenteTienda.getRol() +"\n";
 
         }if(output.isEmpty()){
             return "No se encontro el gerente";
@@ -36,11 +36,11 @@ public class GerenteTiendaService {
         String output ="";
         if (gerenteTiendaRepository.existsById(idGerente)){
             Model_GerenteTienda gerenteTienda = gerenteTiendaRepository.findById(idGerente).get();
-            output+="ID gerente"+gerenteTienda.getIdGerente() +"\n";
-            output+="Nombre Gerente"+gerenteTienda.getNombre() +"\n";
-            output+="Email Gerente"+gerenteTienda.getEmail() +"\n";
-            output+="Password Gerente"+gerenteTienda.getPassword() +"\n";
-            output+="Rol Gerente"+gerenteTienda.getRol() +"\n";
+            output+="ID gerente: "+gerenteTienda.getIdGerente() +"\n";
+            output+="Nombre Gerente: "+gerenteTienda.getNombre() +"\n";
+            output+="Email Gerente: "+gerenteTienda.getEmail() +"\n";
+            output+="Password Gerente: "+gerenteTienda.getPassword() +"\n";
+            output+="Rol Gerente: "+gerenteTienda.getRol() +"\n";
             return output;
         }else{
             return"No se encontro el gerente";
