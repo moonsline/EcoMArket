@@ -18,24 +18,28 @@ public class EmpleadoVentasController {
 
 
      @GetMapping
-     @Operation(summary = "Obtener Empleado", description = "Obtiene la lista de los empleados existentes")
+     @Operation(summary = "Obtener EmpleadoVentas", description = "Obtiene la lista de los EmpleadoVentas existentes")
      @ApiResponse(responseCode = "200", description = "¡Consulta Exitosa!")
     public String getEmpleadoVentas() { return empleadoVentasService.listarEmpleadoVentas();}
 
      @PostMapping
+     @Operation(summary = "Obtener EmpleadoVentas", description = "Obtiene la lista de los EmpleadoVentas existentes")
     public String postEmpleadoVentas(@RequestBody Model_EmpleadoVentas empleadoVentas) {return empleadoVentasService.agregarEmpleadoVentas(empleadoVentas);}
 
     @GetMapping("/{idEmpleado}")
+    @Operation(summary = "Obtener EmpleadoVentas por su id", description="Obtiene la EmpleadoVentas de ventas por su id")
     public String getEmpleadoVentasById(@PathVariable int idEmpleado) {
         return empleadoVentasService.obtenerEmpleadoVentas(idEmpleado);
     }
 
     @DeleteMapping("/{idEmpleado}")
+    @Operation(summary = "Elimina EmpleadoVentas", description="Elimina EmpleadoVentas de la lista")
     public String deleteEmpleadoVentasById(@PathVariable int idEmpleado) {
         return empleadoVentasService.eliminarEmpleadoVentas(idEmpleado);
     }
 
     @PutMapping("/{idEmpleado}")
+    @Operation(summary = "Elimina EmpleadoVentas con su id", description="Elimina EmpleadoVentas buscando su id")
     public String upddateEmpleadoVentasById(@PathVariable int idEmpleado, @RequestBody Model_EmpleadoVentas empleadoVentas) {
         return empleadoVentasService.actualizarEmpleadoVentas(idEmpleado, empleadoVentas);
     }

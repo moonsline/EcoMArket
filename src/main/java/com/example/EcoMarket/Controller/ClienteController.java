@@ -22,19 +22,23 @@ public class ClienteController {
     public String getCliente() { return clienteService.listarCliente();}
 
      @PostMapping
-    public String postCliente(@RequestBody Model_Cliente cliente) {return clienteService.agregarCliente(cliente);}
+     @Operation(summary = "Agregar Cliente", description="Agrega Cliente a su lista")
+     public String postCliente(@RequestBody Model_Cliente cliente) {return clienteService.agregarCliente(cliente);}
 
     @GetMapping("/{idCliente}")
+    @Operation(summary = "Obtener Cliente por su id", description="Obtiene la lista de Cliente por su id")
     public String getClienteById(@PathVariable int idCliente) {
         return clienteService.obtenerCliente(idCliente);
     }
 
     @DeleteMapping("/{idCliente}")
+    @Operation(summary = "Elimina Cliente", description="Elimina Administrador de la Cliente")
     public String deleteClienteById(@PathVariable int idCliente) {
         return clienteService.eliminarCliente(idCliente);
     }
 
     @PutMapping("/{idCliente}")
+    @Operation(summary = "Elimina Cliente con su id", description="Elimina cliente buscando su id")
     public String upddateClienteById(@PathVariable int idCliente, @RequestBody Model_Cliente cliente) {
         return clienteService.actualizarCliente(idCliente, cliente);
     }

@@ -22,19 +22,23 @@ public class AdministradorController {
     public String getAdministrador() { return administradorService.listaAdminstrador();}
 
     @PostMapping
+    @Operation(summary = "Agregar Administración", description="Agrega Administración a su lista")
     public String postAdministrador(@RequestBody Model_Administrador administrador) {return administradorService.agregarAdministrador(administrador);}
 
     @GetMapping("/{idAdmin}")
+    @Operation(summary = "Obtener Administrador por su id", description="Obtiene la lista de Administrador por su id")
     public String getAdministradorById(@PathVariable int idAdmin) {
         return administradorService.obtenerAdminstrador(idAdmin);
     }
 
     @DeleteMapping("/{idAdmin}")
+    @Operation(summary = "Elimina Administrador", description="Elimina Administrador de la lista")
     public String deleteAdministradorById(@PathVariable int idAdmin) {
         return administradorService.eliminarAdminstrador(idAdmin);
     }
 
     @PutMapping("/{idAdmin}")
+    @Operation(summary = "Elimina Administrador con su id", description="Elimina Administrador buscando su id")
     public String upddateAdministradorById(@PathVariable int idAdmin, @RequestBody Model_Administrador administrador) {
         return administradorService.actualizarAdministrador(idAdmin, administrador);
     }
