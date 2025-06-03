@@ -41,7 +41,7 @@ public class ExampleProductoTest {
     void testProductServiceMock() {
         List<Model_Producto> productos = productoRepository.findAll();
         assertNotNull(productos);
-        assertEquals(1, productos.size());
+        assertEquals(15, productos.size());
 
     }
 
