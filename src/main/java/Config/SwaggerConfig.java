@@ -14,7 +14,7 @@ public class SwaggerConfig {
                 new Info()
                         .title("EcoMarket API")
                         .version("1.0")
-                        .description("Servivio web orientado a ventas.")
+                        .description("Servicio web orientado a ventas.")
         );
 
     }
