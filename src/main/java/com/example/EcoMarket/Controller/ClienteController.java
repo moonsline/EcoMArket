@@ -3,16 +3,22 @@ package com.example.EcoMarket.Controller;
 
 import com.example.EcoMarket.Model.Model_Cliente;
 import com.example.EcoMarket.Service.ClienteService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/clientes")
+@Tag(name = "Cliente controlador", description = "Servicio de gestión de cliente")
 public class ClienteController {
     @Autowired
     private ClienteService clienteService;
 
      @GetMapping
+     @Operation(summary = "Optener Clientes", description = "Obtiene una lista de clientes existentes")
+     @ApiResponse(responseCode = "200", description = "¡Consulta exitosa!")
     public String getCliente() { return clienteService.listarCliente();}
 
      @PostMapping
