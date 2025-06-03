@@ -50,7 +50,7 @@ public class ExampleProductoTest {
     void testFindProduct() {
         Model_Producto prueba = productoRepository.findById(1).get();
         assertNotNull(prueba);
-        assertEquals(prueba.getNombre(), prueba.getNombre());
+        assertEquals(800, prueba.getPrecio());
 
     }
 
