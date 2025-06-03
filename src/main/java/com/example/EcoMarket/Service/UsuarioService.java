@@ -6,8 +6,6 @@ import com.example.EcoMarket.Repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-
-
 @Service
 public class UsuarioService {
 
@@ -33,7 +31,6 @@ public class UsuarioService {
         }else {
             return output;
         }
-
     }
     public String obtenerUsuario(int id) {
         String output = "";
