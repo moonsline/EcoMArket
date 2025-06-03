@@ -78,6 +78,25 @@ public class ExampleProductoTest {
             fail();
         }
     }
+    @Test
+    @DisplayName("Actualizar nombre producto")
+    void testUpdateProductName() {
+        // Buscar el producto por su ID
+        Model_Producto producto = productoRepository.findById(12).get();
+
+        // Verificar que el producto existe
+        assertNotNull(producto);
+
+        // Actualizar el nombre del producto
+        producto.setNombre("Bebida desechable Coca-Cola Normal 1.5L");
+        productoRepository.save(producto);
+
+        // Recuperar el producto actualizado
+        Model_Producto productoActualizado = productoRepository.findById(12).get();
+
+        // Verificar que el nombre se haya actualizado correctamente
+        assertEquals("Bebida desechable Coca-Cola Normal 1.5L", productoActualizado.getNombre());
+    }
 }
 
 
