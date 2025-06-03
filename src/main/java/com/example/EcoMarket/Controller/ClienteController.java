@@ -17,7 +17,7 @@ public class ClienteController {
     private ClienteService clienteService;
 
      @GetMapping
-     @Operation(summary = "Optener Clientes", description = "Obtiene una lista de clientes")
+     @Operation(summary = "Optener Clientes", description = "Obtiene una lista de clientes existentes")
      @ApiResponse(responseCode = "200", description = "¡Consulta exitosa!")
     public String getCliente() { return clienteService.listarCliente();}
 

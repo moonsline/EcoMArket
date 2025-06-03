@@ -11,13 +11,13 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/administradores")
-@Tag(name="Administrador Controller", description = "Servicio de Gestión de cliente")
+@Tag(name="Administrador Controller", description = "Servicio de Gestión de Administrador")
 public class AdministradorController {
     @Autowired
     private AdministradorService administradorService;
 
     @GetMapping
-    @Operation(summary = "Administrador", description = "Obtiene el administrador y su información")
+    @Operation(summary = "Administrador", description = "Obtiene la lista de administrador existente")
     @ApiResponse(responseCode = "200", description = "¡Consulta Exitosa!")
     public String getAdministrador() { return administradorService.listaAdminstrador();}
 
