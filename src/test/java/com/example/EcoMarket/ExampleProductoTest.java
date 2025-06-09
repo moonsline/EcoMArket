@@ -23,8 +23,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 
-// esta clase sirve de ejemplo de las clases test, copiando lo que hizo el profe
-// no esta conectada a base de datos, va a dar error
+
 
 public class ExampleProductoTest {
     @Autowired
