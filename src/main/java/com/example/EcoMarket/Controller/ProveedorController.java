@@ -3,7 +3,7 @@ package com.example.EcoMarket.Controller;
 import com.example.EcoMarket.Model.Model_Proveedor;
 import com.example.EcoMarket.Service.ProveedorService;
 import com.example.EcoMarket.hateoas.ProveedorModel;
-import com.example.EcoMarket.hateoas.ProveedorModelAssembler;
+import com.example.EcoMarket.Assemblers.ProveedorModelAssembler;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;

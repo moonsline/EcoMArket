@@ -1,48 +1,57 @@
 package com.example.EcoMarket.Controller;
 
-
 import com.example.EcoMarket.Model.Model_Cliente;
 import com.example.EcoMarket.Service.ClienteService;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.tags.Tag;
+import com.example.EcoMarket.Assemblers.ClienteModelAssembler;
+import com.example.EcoMarket.hateoas.ClienteModel;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.EntityModel;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
 
 @RestController
 @RequestMapping("/clientes")
-@Tag(name = "Cliente controlador", description = "Servicio de gestión de cliente")
 public class ClienteController {
+
     @Autowired
     private ClienteService clienteService;
 
-     @GetMapping
-     @Operation(summary = "Optener Clientes", description = "Obtiene una lista de clientes existentes")
-     @ApiResponse(responseCode = "200", description = "¡Consulta exitosa!")
-    public String getCliente() { return clienteService.listarCliente();}
+    @Autowired
+    private ClienteModelAssembler assembler;
 
-     @PostMapping
-     @Operation(summary = "Agregar Cliente", description="Agrega Cliente a su lista")
-     public String postCliente(@RequestBody Model_Cliente cliente) {return clienteService.agregarCliente(cliente);}
+    @GetMapping
+    public CollectionModel<EntityModel<ClienteModel>> getAllClientes() {
+        List<EntityModel<ClienteModel>> clientes = clienteService.obtenerTodos().stream()
+                .map(assembler::toModel)
+                .collect(Collectors.toList());
 
-    @GetMapping("/{idCliente}")
-    @Operation(summary = "Obtener Cliente por su id", description="Obtiene la lista de Cliente por su id")
-    public String getClienteById(@PathVariable int idCliente) {
-        return clienteService.obtenerCliente(idCliente);
+        return CollectionModel.of(clientes,
+                linkTo(methodOn(ClienteController.class).getAllClientes()).withSelfRel());
     }
 
-    @DeleteMapping("/{idCliente}")
-    @Operation(summary = "Elimina Cliente", description="Elimina Administrador de la Cliente")
-    public String deleteClienteById(@PathVariable int idCliente) {
-        return clienteService.eliminarCliente(idCliente);
+    @GetMapping("/{id}")
+    public EntityModel<ClienteModel> getClienteById(@PathVariable int id) {
+        return assembler.toModel(clienteService.obtenerPorId(id));
     }
 
-    @PutMapping("/{idCliente}")
-    @Operation(summary = "Elimina Cliente con su id", description="Elimina cliente buscando su id")
-    public String upddateClienteById(@PathVariable int idCliente, @RequestBody Model_Cliente cliente) {
-        return clienteService.actualizarCliente(idCliente, cliente);
+    @PostMapping
+    public EntityModel<ClienteModel> crearCliente(@RequestBody Model_Cliente cliente) {
+        return assembler.toModel(clienteService.agregarCliente(cliente));
     }
 
+    @PutMapping("/{id}")
+    public EntityModel<ClienteModel> actualizarCliente(@PathVariable int id, @RequestBody Model_Cliente cliente) {
+        return assembler.toModel(clienteService.actualizarCliente(id, cliente));
+    }
 
-
+    @DeleteMapping("/{id}")
+    public String eliminarCliente(@PathVariable int id) {
+        return clienteService.eliminarCliente(id);
+    }
 }

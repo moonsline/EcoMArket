@@ -1,7 +1,8 @@
-package com.example.EcoMarket.hateoas;
+package com.example.EcoMarket.Assemblers;
 
 import com.example.EcoMarket.Controller.ProveedorController;
 import com.example.EcoMarket.Model.Model_Proveedor;
+import com.example.EcoMarket.hateoas.ProveedorModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.server.RepresentationModelAssembler;
 import org.springframework.stereotype.Component;
