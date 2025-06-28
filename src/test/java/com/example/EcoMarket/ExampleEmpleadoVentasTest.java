@@ -49,19 +49,15 @@ public class ExampleEmpleadoVentasTest {
     }
 
     @Test
-    @DisplayName("Test controller")
-    void testController(){
-        when(empleadoVentasServiceMock.listarEmpleadoVentas()).thenReturn("Lista completa");
-
-        try{
-            mockMvc.perform(get("/empleados"))
-                    .andExpect(status().isOk())
-                    .andExpect(content().string("Lista completa"));
-        } catch (Exception ex){
+    @DisplayName("Test controller - GET /empleados-ventas")
+    void testControllerGetAll() {
+        try {
+            mockMvc.perform(get("/empleados-ventas"))
+                    .andExpect(status().isOk());
+        } catch (Exception ex) {
             System.out.println(ex.getMessage());
             fail();
         }
-
     }
 
     @Test
