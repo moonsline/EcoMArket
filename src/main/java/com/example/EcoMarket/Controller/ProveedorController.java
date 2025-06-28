@@ -6,6 +6,7 @@ import com.example.EcoMarket.hateoas.ProveedorModel;
 import com.example.EcoMarket.Assemblers.ProveedorModelAssembler;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +31,8 @@ public class ProveedorController {
     private ProveedorModelAssembler assembler;
 
     @GetMapping
-    @Operation(summary = "Obtener proveedores", description="Obtiene la lista de proveedores")
+    @Operation(summary = "Obtener todos los proveedores", description = "Devuelve una lista con todos los proveedores registrados")
+    @ApiResponse(responseCode = "200", description = "Consulta exitosa")
     public CollectionModel<EntityModel<ProveedorModel>> getProveedores() {
         List<Model_Proveedor> proveedores = proveedorService.obtenerTodos();
 
@@ -43,27 +45,31 @@ public class ProveedorController {
     }
 
     @GetMapping("/{id}")
-    @Operation(summary = "Obtener proveedor por ID", description="Obtiene proveedor buscando su ID")
+    @Operation(summary = "Obtener proveedor por ID", description = "Devuelve un proveedor específico según su ID")
+    @ApiResponse(responseCode = "200", description = "Proveedor encontrado")
     public EntityModel<ProveedorModel> getProveedoreById(@PathVariable int id) {
         Model_Proveedor proveedor = proveedorService.obtenerPorId(id);
         return assembler.toModel(proveedor);
     }
 
     @PostMapping
-    @Operation(summary = "Agregar proveedor", description="Agrega un proveedor a la lista")
+    @Operation(summary = "Agregar nuevo proveedor", description = "Agrega un nuevo proveedor al sistema")
+    @ApiResponse(responseCode = "200", description = "Proveedor agregado correctamente")
     public EntityModel<ProveedorModel> postProveedores(@RequestBody Model_Proveedor proveedor) {
         Model_Proveedor nuevo = proveedorService.agregarProveedor(proveedor);
         return assembler.toModel(nuevo);
     }
 
     @DeleteMapping("/{id}")
-    @Operation(summary = "Eliminar proveedor", description="Elimina un proveedor por su ID")
+    @Operation(summary = "Eliminar proveedor por ID", description = "Elimina un proveedor del sistema según su ID")
+    @ApiResponse(responseCode = "200", description = "Proveedor eliminado correctamente")
     public String deleteProveedoreById(@PathVariable int id) {
         return proveedorService.eliminarProveedor(id);
     }
 
     @PutMapping("/{id}")
-    @Operation(summary = "Actualizar proveedor", description="Actualiza proveedor por ID")
+    @Operation(summary = "Actualizar proveedor por ID", description = "Actualiza los datos de un proveedor ya existente")
+    @ApiResponse(responseCode = "200", description = "Proveedor actualizado correctamente")
     public EntityModel<ProveedorModel> updateProveedor(@PathVariable int id, @RequestBody Model_Proveedor proveedor) {
         Model_Proveedor actualizado = proveedorService.actualizarProveedor(id, proveedor);
         return assembler.toModel(actualizado);

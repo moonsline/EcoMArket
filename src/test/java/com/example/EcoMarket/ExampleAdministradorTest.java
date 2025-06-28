@@ -16,6 +16,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
@@ -49,29 +50,26 @@ public class ExampleAdministradorTest {
         assertEquals("Ariel Silva", prueba.getNombre());
     }
 
+    //test de controller para que sea similar al anterior con catch, etc pero que sirva para HATEOAS
     @Test
-    @DisplayName("Test controller")
-    void testController() {
-        //Indicamos que el retorno de listarAdministradores se identificara con el valor ingresado en thenReturn
-        when(administradorServiceMock.listaAdminstrador()).thenReturn("Lista completa");
+    @DisplayName("Test controller HATEOAS ")
+    void testControllerHateoas() {
+        try{
+            mockMvc.perform(get("administradores/"))
+                    .andExpect(status().isOk());
 
-        //Bloque Try Except/Catch
-        //Nos permite probar una funcionalidad de codigo o un segmento de codigo y si este falla
-        //Se captura por medio de Catch(Exception var) y ejecuta un control de error
-        try {
-            //MockMvc Nos permite realizar consultas HTTPMethod
-            //perform nos permite ejecutar dichas llamadas y luego ingresamos el metodo HTTP correspondiente
-            //adicionalmente podemos agregar parametros u variables adicionales de ser requerido
-            //Finalmente andExcept nos permite indicar que esperamos de dicha respuesta HTTP
-            //Tanto codigo como contenido
-            mockMvc.perform(get("/administradores"))
-                    .andExpect(status().isOk())
-                    .andExpect(content().string("Lista completa"));
-
-        } catch (Exception ex) {
+        }catch(Exception ex){
             System.out.println(ex.getMessage());
             fail();
         }
+    }
+
+    @Test
+    void testObtenerPorId(){
+        Model_Administrador admin = new Model_Administrador(22,"Carlos","carlosabarzua@gmail.com","pass1234","admin");
+        when(administradorRepository.findById(22)).thenReturn(Optional.of(admin));
+        Model_Administrador resultadoadmin = administradorServiceMock.obtenerPorId(22);
+        assertEquals("Carlos",resultadoadmin.getNombre());
     }
 
     @Test
