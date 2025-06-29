@@ -5,7 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -13,10 +12,10 @@ import lombok.NoArgsConstructor;
 public class Model_EmpleadoVentas {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int idEmpleado;
+    private int idEmpleadoVentas;
     private String nombre;
     private String email;
     private String password;
     private String rol;
-
+    private String direccion;
 }

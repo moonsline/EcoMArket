@@ -11,7 +11,7 @@ public class EmpleadoVentasModel extends RepresentationModel<EmpleadoVentasModel
     private String rol;
 
     public EmpleadoVentasModel(Model_EmpleadoVentas ev) {
-        this.idEmpleado = ev.getIdEmpleado();
+        this.idEmpleado = ev.getIdEmpleadoVentas();
         this.nombre = ev.getNombre();
         this.email = ev.getEmail();
         this.rol = ev.getRol();

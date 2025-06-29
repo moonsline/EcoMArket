@@ -1,51 +1,71 @@
 package com.example.EcoMarket.Controller;
 
-
 import com.example.EcoMarket.Model.Model_Usuario;
 import com.example.EcoMarket.Service.UsuarioService;
+import com.example.EcoMarket.Assemblers.UsuarioModelAssembler;
+import com.example.EcoMarket.hateoas.UsuarioModel;
+
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.EntityModel;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
 
 @RestController
 @RequestMapping("/usuarios")
-@Tag(name="Controlador User", description= "Servicio de gestion de usuarios")
+@Tag(name = "Controlador Usuario", description = "Servicio de gestión de usuarios del sistema")
 public class UsuarioController {
 
     @Autowired
     private UsuarioService usuarioService;
 
-    @GetMapping
-    @Operation(summary = "Obtener usuarios", description="Obtiene la lista de usuarios")
-    public String getUsuarios() {
-        return usuarioService.listarUsuarios();
-    }
+    @Autowired
+    private UsuarioModelAssembler assembler;
 
-    @PostMapping
-    @Operation(summary = "Agregar usuarios", description="Agrega usuarios a la lista")
-    public String postUsuarios(@RequestBody Model_Usuario usuario) {
-        return usuarioService.agregarUsuario(usuario);
+    @GetMapping
+    @Operation(summary = "Obtener todos los usuarios", description = "Retorna una lista de todos los usuarios del sistema")
+    @ApiResponse(responseCode = "200", description = "Consulta exitosa")
+    public CollectionModel<EntityModel<UsuarioModel>> getAllUsuarios() {
+        List<EntityModel<UsuarioModel>> lista = usuarioService.obtenerTodos().stream()
+                .map(assembler::toModel)
+                .collect(Collectors.toList());
+
+        return CollectionModel.of(lista,
+                linkTo(methodOn(UsuarioController.class).getAllUsuarios()).withSelfRel());
     }
 
     @GetMapping("/{id}")
-    @Operation(summary = "Obtener usuario con su id", description="Obtiene usuario buscando su id")
-    public String getUsuarioById(@PathVariable int id) {
-        return usuarioService.obtenerUsuario(id);
+    @Operation(summary = "Obtener usuario por ID", description = "Retorna un usuario según su ID")
+    @ApiResponse(responseCode = "200", description = "Usuario encontrado")
+    public EntityModel<UsuarioModel> getUsuarioById(@PathVariable int id) {
+        return assembler.toModel(usuarioService.obtenerPorId(id));
     }
 
-    @DeleteMapping("/{id}")
-    @Operation(summary = "Elimina usuarios", description="Elimina usuarios de la lista")
-    public String deleteUsuarioById(@PathVariable int id) {
-        return usuarioService.eliminarUsuario(id);
+    @PostMapping
+    @Operation(summary = "Crear nuevo usuario", description = "Agrega un nuevo usuario al sistema")
+    @ApiResponse(responseCode = "200", description = "Usuario creado exitosamente")
+    public EntityModel<UsuarioModel> crearUsuario(@RequestBody Model_Usuario usuario) {
+        return assembler.toModel(usuarioService.agregarUsuario(usuario));
     }
 
     @PutMapping("/{id}")
-    @Operation(summary = "Elimina usuario con su id", description="Elimina usuario buscando su id")
-    public String upddateUsuarioById(@PathVariable int id, @RequestBody Model_Usuario usuario) {
-        return usuarioService.actualizarUsuario(id, usuario);
+    @Operation(summary = "Actualizar usuario por ID", description = "Actualiza los datos de un usuario existente")
+    @ApiResponse(responseCode = "200", description = "Usuario actualizado correctamente")
+    public EntityModel<UsuarioModel> actualizarUsuario(@PathVariable int id, @RequestBody Model_Usuario usuario) {
+        return assembler.toModel(usuarioService.actualizarUsuario(id, usuario));
     }
 
-
-
+    @DeleteMapping("/{id}")
+    @Operation(summary = "Eliminar usuario por ID", description = "Elimina un usuario del sistema según su ID")
+    @ApiResponse(responseCode = "200", description = "Usuario eliminado correctamente")
+    public String eliminarUsuario(@PathVariable int id) {
+        return usuarioService.eliminarUsuario(id);
+    }
 }

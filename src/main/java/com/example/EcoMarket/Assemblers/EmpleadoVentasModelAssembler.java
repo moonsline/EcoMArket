@@ -17,7 +17,7 @@ public class EmpleadoVentasModelAssembler implements RepresentationModelAssemble
     public EntityModel<EmpleadoVentasModel> toModel(Model_EmpleadoVentas ev) {
         EmpleadoVentasModel model = new EmpleadoVentasModel(ev);
         return EntityModel.of(model,
-                linkTo(methodOn(EmpleadoVentasController.class).getEmpleadoVentasById(ev.getIdEmpleado())).withSelfRel(),
+                linkTo(methodOn(EmpleadoVentasController.class).getEmpleadoVentasById(ev.getIdEmpleadoVentas())).withSelfRel(),
                 linkTo(methodOn(EmpleadoVentasController.class).getAllEmpleadosVentas()).withRel("empleados-ventas"));
     }
 }

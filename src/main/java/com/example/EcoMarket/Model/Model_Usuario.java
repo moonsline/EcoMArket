@@ -1,6 +1,5 @@
 package com.example.EcoMarket.Model;
 
-
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -9,21 +8,18 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Data //Genera getters, setters, toString, equals, hashCode y un constructor con los campos requeridos.
-@AllArgsConstructor //Genera un constructor con todos los campos
-@NoArgsConstructor //Genera un constructor con todos los campos
-
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
 public class Model_Usuario {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int idUsuario;
+    private Integer id; // Cambiado a Integer y nombre estándar
+
     private String nombre;
-    private String email;
-    private String password;
+    private String correo; // Cambiado a "correo" para ser coherente
+    private String contrasena; // Cambiado a "contrasena" para ser coherente
     private String rol;
-
-
-
 }
