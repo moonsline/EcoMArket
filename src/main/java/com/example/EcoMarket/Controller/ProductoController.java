@@ -1,50 +1,55 @@
 package com.example.EcoMarket.Controller;
 
 
+import com.example.EcoMarket.Assemblers.ProductoModelAssembler;
 import com.example.EcoMarket.Model.Model_Producto;
 import com.example.EcoMarket.Service.ProductoService;
+import com.example.EcoMarket.hateoas.ProductoModel;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.EntityModel;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.stream.Collectors;
 
 
 @RestController
 @RequestMapping("/productos")
-@Tag(name="Controlador Producto", description= "Servicio de gestion de producto")
+@Tag(name = "Controlador Producto", description = "Gestión de productos")
 public class ProductoController {
 
     @Autowired
-    private ProductoService productoService;
+    private ProductoService service;
+    @Autowired
+    private ProductoModelAssembler assembler;
 
     @GetMapping
-    @Operation(summary = "Obtener productos", description="Obtiene la lista de productos")
-    public String getPoducto(){
-        return productoService.listaProducto();
-    }
-
-    @PostMapping
-    @Operation(summary = "Agregar productos", description="Agrega productos a la lista")
-    public String postProductos(@RequestBody Model_Producto producto){
-        return productoService.agregarProducto(producto);
+    @Operation(summary = "Obtener productos")
+    public CollectionModel<EntityModel<ProductoModel>> getAllProductos() {
+        return CollectionModel.of(service.obtenerTodos().stream()
+                .map(assembler::toModel)
+                .collect(Collectors.toList()));
     }
 
     @GetMapping("/{id}")
-    @Operation(summary = "Obtener productos con su id", description="Obtiene producto buscando su id")
-    public String getProductoById(@PathVariable int id){
-        return productoService.obtenerProducto(id);
+    public EntityModel<ProductoModel> getProductoById(@PathVariable int id) {
+        return assembler.toModel(service.obtenerPorId(id));
     }
 
-    @DeleteMapping("/{id}")
-    @Operation(summary = "Elimina productos", description="Elimina productos de la lista")
-    public String deleteProductosById(@PathVariable int id){
-        return productoService.eliminarProducto(id);
+    @PostMapping
+    public EntityModel<ProductoModel> crear(@RequestBody Model_Producto p) {
+        return assembler.toModel(service.agregar(p));
     }
 
     @PutMapping("/{id}")
-    @Operation(summary = "Elimina producto con su id", description="Elimina producto buscando su id")
-    public String updateProductoById(@PathVariable int id, @RequestBody Model_Producto producto){
-        return productoService.actualizarProducto(id, producto);
+    public EntityModel<ProductoModel> actualizar(@PathVariable int id, @RequestBody Model_Producto p) {
+        return assembler.toModel(service.actualizar(id, p));
     }
 
+    @DeleteMapping("/{id}")
+    public String eliminar(@PathVariable int id) {
+        return service.eliminar(id);
+    }
 }

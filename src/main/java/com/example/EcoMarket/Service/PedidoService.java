@@ -1,68 +1,55 @@
 package com.example.EcoMarket.Service;
 
 import com.example.EcoMarket.Model.Model_Pedido;
+import com.example.EcoMarket.Model.Model_Producto;
 import com.example.EcoMarket.Repository.PedidoRepository;
+import com.example.EcoMarket.Repository.ProductoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class PedidoService {
-
     @Autowired
-    PedidoRepository pedidoRepository;
+    private PedidoRepository pedidoRepo;
+    @Autowired
+    private ProductoRepository productoRepo;
 
-    public String agregarPedido(Model_Pedido pedido){
-        pedidoRepository.save(pedido);
-        return "Pedido agregado con exito!";
+    public List<Model_Pedido> obtenerTodos() { return pedidoRepo.findAll(); }
+
+    public Model_Pedido obtenerPorId(int id) {
+        return pedidoRepo.findById(id).orElseThrow(() -> new RuntimeException("No encontrado"));
     }
 
-    public String listarPedidos(){
-        StringBuilder output = new StringBuilder();
-        for(Model_Pedido pedido : pedidoRepository.findAll()){
-            output.append("ID pedido: ").append(pedido.getIdPedido()).append("\n");
-            output.append("Fecha: ").append(pedido.getFecha()).append("\n");
-            output.append("Estado: ").append(pedido.getEstado()).append("\n");
-            output.append("Total: ").append(pedido.getTotal()).append("\n");
-            output.append("Productos: ").append(pedido.getProductos());
-        }
-        return output.isEmpty() ? "No se encontraron pedidos" : output.toString();
+    public Model_Pedido agregar(Model_Pedido p) { return pedidoRepo.save(p); }
+
+    public Model_Pedido actualizar(int id, Model_Pedido p) {
+        Model_Pedido actual = obtenerPorId(id);
+        actual.setFecha(p.getFecha());
+        actual.setEstado(p.getEstado());
+        actual.setTotal(p.getTotal());
+        return pedidoRepo.save(actual);
     }
 
-    public String obtenerPedido(int id){
-        if(pedidoRepository.existsById(id)){
-            Model_Pedido pedido = pedidoRepository.findById(id).get();
-            StringBuilder output = new StringBuilder();
-            output.append("ID pedido: ").append(pedido.getIdPedido()).append("\n");
-            output.append("Fecha: ").append(pedido.getFecha()).append("\n");
-            output.append("Estado: ").append(pedido.getEstado()).append("\n");
-            output.append("Total: ").append(pedido.getTotal()).append("\n");
-            output.append("Productos: ").append(pedido.getProductos());
-            return output.toString();
-        }else{
-            return "Pedido no encontrado";
-        }
+    public String eliminar(int id) {
+        if (pedidoRepo.existsById(id)) {
+            pedidoRepo.deleteById(id);
+            return "Pedido eliminado";
+        } else return "No encontrado";
     }
 
-    public String eliminarPedido(int id){
-        if(pedidoRepository.existsById(id)){
-            pedidoRepository.deleteById(id);
-            return "Pedido eliminado con exito!";
-        }else {
-            return "Pedido no encontrado";
-        }
+    public Model_Pedido agregarProducto(int idPedido, int idProducto) {
+        Model_Pedido pedido = obtenerPorId(idPedido);
+        Model_Producto producto = productoRepo.findById(idProducto).orElseThrow();
+        pedido.getProductos().add(producto);
+        return pedidoRepo.save(pedido);
     }
 
-    public String actualizarPedido(int id, Model_Pedido pedido){
-        if(pedidoRepository.existsById(id)){
-            Model_Pedido buscado = pedidoRepository.findById(id).get();
-            buscado.setFecha(pedido.getFecha());
-            buscado.setEstado(pedido.getEstado());
-            buscado.setTotal(pedido.getTotal());
-            buscado.setProductos(pedido.getProductos());
-            pedidoRepository.save(buscado);
-            return "Pedido actualizado con exito!";
-        }else{
-            return "Pedido no encontrado";
-        }
+    public Model_Pedido quitarProducto(int idPedido, int idProducto) {
+        Model_Pedido pedido = obtenerPorId(idPedido);
+        pedido.getProductos().removeIf(p -> p.getId() == idProducto);
+        return pedidoRepo.save(pedido);
     }
 }
+

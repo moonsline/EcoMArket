@@ -54,24 +54,11 @@ public class ExampleProductoTest {
     }
 
     @Test
-    @DisplayName("Test controller")
-    void testController() {
-        //Indicamos que el retorno de listarProductos se identificara con el valor ingresado en thenReturn
-        when(productServiceMock.listaProducto()).thenReturn("Lista completa");
-
-        //Bloque Try Except/Catch
-        //Nos permite probar una funcionalidad de codigo o un segmento de codigo y si este falla
-        //Se captura por medio de Catch(Exception var) y ejecuta un control de error
+    @DisplayName("Test controller productos GET /productos")
+    void testControllerProductos() {
         try {
-            //MockMvc Nos permite realizar consultas HTTPMethod
-            //perform nos permite ejecutar dichas llamadas y luego ingresamos el metodo HTTP correspondiente
-            //adicionalmente podemos agregar parametros u variables adicionales de ser requerido
-            //Finalmente andExcept nos permite indicar que esperamos de dicha respuesta HTTP
-            //Tanto codigo como contenido
             mockMvc.perform(get("/productos"))
-                    .andExpect(status().isOk())
-                    .andExpect(content().string("Lista completa"));
-
+                    .andExpect(status().isOk());
         } catch (Exception ex) {
             System.out.println(ex.getMessage());
             fail();
