@@ -22,5 +22,13 @@ public class Model_Cliente  {
 
 
 
+    // Opcional: constructor sin idCliente
+    public Model_Cliente(String nombre, String email, String password, String rol, String direccion) {
+        this.nombre = nombre;
+        this.email = email;
+        this.password = password;
+        this.rol = rol;
+        this.direccion = direccion;
+    }
 
 }

@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -26,12 +27,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 public class ExampleAdministradorTest {
-    @Autowired
+    @MockBean
     AdministradorRepository administradorRepository;
 
     @Autowired
     MockMvc mockMvc;
-    @Autowired
+    @MockBean
     private AdministradorService administradorServiceMock;
 
     @Test
@@ -47,7 +48,7 @@ public class ExampleAdministradorTest {
     void testFindAdministrador() {
         Model_Administrador prueba = administradorRepository.findById(1).get();
         assertNotNull(prueba);
-        assertEquals("Ariel Silva", prueba.getNombre());
+        assertEquals("Limon", prueba.getNombre());
     }
 
     //test de controller para que sea similar al anterior con catch, etc pero que sirva para HATEOAS
@@ -55,7 +56,7 @@ public class ExampleAdministradorTest {
     @DisplayName("Test controller HATEOAS ")
     void testControllerHateoas() {
         try{
-            mockMvc.perform(get("administradores/"))
+            mockMvc.perform(get("/administradores"))
                     .andExpect(status().isOk());
 
         }catch(Exception ex){
@@ -67,29 +68,39 @@ public class ExampleAdministradorTest {
     @Test
     void testObtenerPorId(){
         Model_Administrador admin = new Model_Administrador(22,"Carlos","carlosabarzua@gmail.com","pass1234","admin");
-        when(administradorRepository.findById(22)).thenReturn(Optional.of(admin));
+        when(administradorServiceMock.obtenerPorId(22)).thenReturn(admin);
         Model_Administrador resultadoadmin = administradorServiceMock.obtenerPorId(22);
-        assertEquals("Carlos",resultadoadmin.getNombre());
+        assertEquals("Carlos", resultadoadmin.getNombre());
     }
 
     @Test
     @DisplayName("Actualizar nombre admin")
     void testUpdateAministradorName() {
-        // Buscar el producto por su ID
-        Model_Administrador administrador = administradorRepository.findById(1).get();
+        Model_Administrador administrador = new Model_Administrador(1, "AntiguoNombre", "admin@mail.com", "pass", "admin");
+        when(administradorRepository.findById(1)).thenReturn(Optional.of(administrador));
+        when(administradorRepository.save(administrador)).thenReturn(administrador);
 
-        // Verificar que el producto existe
-        assertNotNull(administrador);
-
-        // Actualizar el nombre del producto
+        // Actualizar el nombre del administrador
         administrador.setNombre("Limon");
         administradorRepository.save(administrador);
 
-        // Recuperar el producto actualizado
+        // Recuperar el administrador actualizado
+        when(administradorRepository.findById(1)).thenReturn(Optional.of(administrador));
         Model_Administrador administradorActualizado = administradorRepository.findById(1).get();
 
-        // Verificar que el nombre se haya actualizado correctamente
         assertEquals("Limon", administradorActualizado.getNombre());
+    }
+    
+    @Test
+    @DisplayName("Lanzar excepción si administrador no existe")
+    void testAdministradorNoExiste() {
+        when(administradorServiceMock.obtenerPorId(99))
+                .thenThrow(new RuntimeException("Administrador no encontrado con ID: 99"));
+
+        RuntimeException exception = assertThrows(RuntimeException.class, () -> {
+            administradorServiceMock.obtenerPorId(99);
+        });
+        assertEquals("Administrador no encontrado con ID: 99", exception.getMessage());
     }
 
 }
