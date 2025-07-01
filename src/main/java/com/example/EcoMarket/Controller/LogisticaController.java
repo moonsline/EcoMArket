@@ -6,7 +6,10 @@ import com.example.EcoMarket.Assemblers.LogisticaModelAssembler;
 import com.example.EcoMarket.hateoas.LogisticaModel;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
@@ -29,10 +32,11 @@ public class LogisticaController {
     @Autowired
     private LogisticaModelAssembler assembler;
 
-
+    @Operation(summary = "Obtener todas las logísticas", description = "Devuelve una lista de todas las logísticas registradas")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Lista de logísticas obtenida correctamente")
+    })
     @GetMapping
-
-
     public CollectionModel<EntityModel<LogisticaModel>> getLogistica() {
         List<EntityModel<LogisticaModel>> logistica = logisticaService.listarLogistica().stream()
                 .map(assembler::toModel)
@@ -43,30 +47,49 @@ public class LogisticaController {
     }
 
 
-     @PostMapping
-     @Operation(summary = "Agregar logistica", description="Agrega logistica a su lista")
-     @ApiResponse(responseCode = "200", description = "Logistica creado exitosamente")
-     public EntityModel<LogisticaModel> postLogistica(@RequestBody Model_Logistica logistica) {return assembler.toModel(logisticaService.agregarLogisitca(logistica));}
+    @Operation(summary = "Agregar logística", description = "Agrega una nueva logística a la lista")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Logística creada exitosamente")
+    })
+    @PostMapping
+    public EntityModel<LogisticaModel> postLogistica(
+            @Parameter(description = "Datos de la logística a crear", required = true)
+            @RequestBody Model_Logistica logistica) {
+        return assembler.toModel(logisticaService.agregarLogisitca(logistica));
+    }
 
+    @Operation(summary = "Obtener logística por ID", description = "Obtiene una logística específica por su ID")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Logística encontrada"),
+            @ApiResponse(responseCode = "404", description = "Logística no encontrada")
+    })
     @GetMapping("/{idLogistica}")
-    @Operation(summary = "Obtener logistica por su id", description="Obtiene la lista de logistica por su id")
-    @ApiResponse(responseCode = "200", description = "Logistica encontrado")
-    public EntityModel<LogisticaModel> getLogisticaById(@PathVariable int idLogistica) {
+    public EntityModel<LogisticaModel> getLogisticaById(
+            @Parameter(description = "ID de la logística a buscar", required = true)
+            @PathVariable int idLogistica) {
         return assembler.toModel(logisticaService.obtenerLogistica(idLogistica));
     }
 
-
-
+    @Operation(summary = "Eliminar logística", description = "Elimina una logística de la lista por su ID")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Logística eliminada correctamente"),
+            @ApiResponse(responseCode = "404", description = "Logística no encontrada")
+    })
     @DeleteMapping("/{idLogistica}")
-    @Operation(summary = "Elimina logistica", description="Elimina logistica de la lista")
-    public String deleteLogisticaById(@PathVariable int idLogistica) {
+    public String deleteLogisticaById(
+            @Parameter(description = "ID de la logística a eliminar", required = true) @PathVariable int idLogistica) {
         return logisticaService.eliminarLogistica(idLogistica);
     }
 
+    @Operation(summary = "Actualizar logística por ID", description = "Modifica los datos de una logística buscando por su ID")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Logística actualizada correctamente"),
+            @ApiResponse(responseCode = "404", description = "Logística no encontrada")
+    })
     @PutMapping("/{idLogistica}")
-    @Operation(summary = "Actulizar logistica con su id", description="Modifica los datos de  logistica buscando su id")
-    @ApiResponse(responseCode = "200", description = "Logistica actualizado correctamente")
-    public EntityModel<LogisticaModel> upddateLogisticaById(@PathVariable int idLogistica, @RequestBody Model_Logistica logistica) {
+    public EntityModel<LogisticaModel> upddateLogisticaById(
+            @Parameter(description = "ID de la logística a actualizar", required = true) @PathVariable int idLogistica,
+            @Parameter(description = "Datos actualizados de la logística", required = true) @RequestBody Model_Logistica logistica) {
         return assembler.toModel(logisticaService.actualizarLogistica(idLogistica, logistica));
     }
 
