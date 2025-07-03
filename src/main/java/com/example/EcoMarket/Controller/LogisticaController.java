@@ -34,7 +34,9 @@ public class LogisticaController {
 
     @Operation(summary = "Obtener todas las logísticas", description = "Devuelve una lista de todas las logísticas registradas")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Lista de logísticas obtenida correctamente")
+            @ApiResponse(responseCode = "200", description = "Lista de logísticas obtenida correctamente"),
+            @ApiResponse(responseCode = "404", description = "Lista de logísticas no encontrado")
+
     })
     @GetMapping
     public CollectionModel<EntityModel<LogisticaModel>> getLogistica() {
@@ -49,7 +51,9 @@ public class LogisticaController {
 
     @Operation(summary = "Agregar logística", description = "Agrega una nueva logística a la lista")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Logística creada exitosamente")
+            @ApiResponse(responseCode = "201", description = "Logística creada exitosamente"),
+            @ApiResponse(responseCode = "404", description = "Logística no encontrado")
+
     })
     @PostMapping
     public EntityModel<LogisticaModel> postLogistica(

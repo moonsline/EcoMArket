@@ -29,7 +29,9 @@ public class ProductoController {
 
     @Operation(summary = "Obtener todos los productos", description = "Devuelve una lista de todos los productos registrados")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Lista de productos obtenida correctamente")
+            @ApiResponse(responseCode = "200", description = "Lista de productos obtenida correctamente"),
+            @ApiResponse(responseCode = "404", description = "Lista de productos no encontrado")
+
     })
     @GetMapping
     public CollectionModel<EntityModel<ProductoModel>> getAllProductos() {
@@ -48,7 +50,9 @@ public class ProductoController {
     }
     @Operation(summary = "Crear un nuevo producto", description = "Crea un producto con los datos proporcionados")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Producto creado correctamente")
+            @ApiResponse(responseCode = "201", description = "Producto creado correctamente"),
+            @ApiResponse(responseCode = "404", description = "Producto no encontrado")
+
     })
     @PostMapping
     public EntityModel<ProductoModel> crear(@RequestBody Model_Producto p) {

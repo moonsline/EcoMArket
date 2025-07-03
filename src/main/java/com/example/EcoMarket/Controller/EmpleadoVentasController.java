@@ -33,6 +33,8 @@ public class EmpleadoVentasController {
     @GetMapping
     @Operation(summary = "Obtener todos los empleados de ventas", description = "Lista todos los empleados que desempeñan funciones de ventas")
     @ApiResponse(responseCode = "200", description = "Consulta exitosa")
+    @ApiResponse(responseCode = "404", description = "Consulta no encontrado")
+
     public CollectionModel<EntityModel<EmpleadoVentasModel>> getAllEmpleadosVentas() {
         List<EntityModel<EmpleadoVentasModel>> lista = service.obtenerTodos().stream()
                 .map(assembler::toModel)
@@ -45,6 +47,8 @@ public class EmpleadoVentasController {
     @GetMapping("/{id}")
     @Operation(summary = "Obtener empleado de ventas por ID", description = "Devuelve los datos de un empleado de ventas según su ID")
     @ApiResponse(responseCode = "200", description = "Empleado encontrado")
+    @ApiResponse(responseCode = "404", description = "Empleado no encontrado")
+
     public EntityModel<EmpleadoVentasModel> getEmpleadoVentasById(@PathVariable int id) {
         return assembler.toModel(service.obtenerPorId(id));
     }
@@ -52,6 +56,8 @@ public class EmpleadoVentasController {
     @PostMapping
     @Operation(summary = "Agregar nuevo empleado de ventas", description = "Registra un nuevo empleado para ventas")
     @ApiResponse(responseCode = "200", description = "Empleado agregado correctamente")
+    @ApiResponse(responseCode = "404", description = "Empleado no encontrado")
+
     public EntityModel<EmpleadoVentasModel> crear(@RequestBody Model_EmpleadoVentas nuevo) {
         return assembler.toModel(service.agregar(nuevo));
     }
@@ -59,6 +65,8 @@ public class EmpleadoVentasController {
     @PutMapping("/{id}")
     @Operation(summary = "Actualizar empleado de ventas por ID", description = "Modifica los datos de un empleado existente")
     @ApiResponse(responseCode = "200", description = "Empleado actualizado correctamente")
+    @ApiResponse(responseCode = "404", description = "Empleado no encontrado")
+
     public EntityModel<EmpleadoVentasModel> actualizar(@PathVariable int id, @RequestBody Model_EmpleadoVentas nuevo) {
         return assembler.toModel(service.actualizar(id, nuevo));
     }
@@ -66,6 +74,8 @@ public class EmpleadoVentasController {
     @DeleteMapping("/{id}")
     @Operation(summary = "Eliminar empleado de ventas por ID", description = "Elimina un empleado del sistema")
     @ApiResponse(responseCode = "200", description = "Empleado eliminado correctamente")
+    @ApiResponse(responseCode = "404", description = "Empleado no encontrado")
+
     public String eliminar(@PathVariable int id) {
         return service.eliminar(id);
     }

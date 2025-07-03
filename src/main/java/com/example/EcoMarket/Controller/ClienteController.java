@@ -32,6 +32,8 @@ public class ClienteController {
     @GetMapping
     @Operation(summary = "Obtener todos los clientes", description = "Retorna una lista de todos los clientes registrados")
     @ApiResponse(responseCode = "200", description = "Consulta exitosa")
+    @ApiResponse(responseCode = "404", description = "Cliente no encontrado")
+
     public CollectionModel<EntityModel<ClienteModel>> getAllClientes() {
         List<EntityModel<ClienteModel>> clientes = clienteService.obtenerTodos().stream()
                 .map(assembler::toModel)
@@ -44,6 +46,8 @@ public class ClienteController {
     @GetMapping("/{id}")
     @Operation(summary = "Obtener cliente por ID", description = "Devuelve los datos de un cliente específico")
     @ApiResponse(responseCode = "200", description = "Cliente encontrado")
+    @ApiResponse(responseCode = "404", description = "Cliente no encontrado")
+
     public EntityModel<ClienteModel> getClienteById(@PathVariable int id) {
         return assembler.toModel(clienteService.obtenerPorId(id));
     }
@@ -51,6 +55,8 @@ public class ClienteController {
     @PostMapping
     @Operation(summary = "Crear nuevo cliente", description = "Agrega un nuevo cliente al sistema")
     @ApiResponse(responseCode = "200", description = "Cliente creado exitosamente")
+    @ApiResponse(responseCode = "404", description = "Cliente no encontrado")
+
     public EntityModel<ClienteModel> crearCliente(@RequestBody Model_Cliente cliente) {
         return assembler.toModel(clienteService.agregarCliente(cliente));
     }
@@ -58,6 +64,8 @@ public class ClienteController {
     @PutMapping("/{id}")
     @Operation(summary = "Actualizar cliente por ID", description = "Modifica los datos de un cliente existente")
     @ApiResponse(responseCode = "200", description = "Cliente actualizado correctamente")
+    @ApiResponse(responseCode = "404", description = "Cliente no encontrado")
+
     public EntityModel<ClienteModel> actualizarCliente(@PathVariable int id, @RequestBody Model_Cliente cliente) {
         return assembler.toModel(clienteService.actualizarCliente(id, cliente));
     }
@@ -65,6 +73,8 @@ public class ClienteController {
     @DeleteMapping("/{id}")
     @Operation(summary = "Eliminar cliente por ID", description = "Elimina un cliente del sistema")
     @ApiResponse(responseCode = "200", description = "Cliente eliminado correctamente")
+    @ApiResponse(responseCode = "404", description = "Cliente no encontrado")
+
     public String eliminarCliente(@PathVariable int id) {
         return clienteService.eliminarCliente(id);
     }

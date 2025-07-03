@@ -32,6 +32,8 @@ public class UsuarioController {
     @GetMapping
     @Operation(summary = "Obtener todos los usuarios", description = "Retorna una lista de todos los usuarios del sistema")
     @ApiResponse(responseCode = "200", description = "Consulta exitosa")
+    @ApiResponse(responseCode = "404", description = "Consulta no encontrada")
+
     public CollectionModel<EntityModel<UsuarioModel>> getAllUsuarios() {
         List<EntityModel<UsuarioModel>> lista = usuarioService.obtenerTodos().stream()
                 .map(assembler::toModel)
@@ -44,6 +46,8 @@ public class UsuarioController {
     @GetMapping("/{id}")
     @Operation(summary = "Obtener usuario por ID", description = "Retorna un usuario según su ID")
     @ApiResponse(responseCode = "200", description = "Usuario encontrado")
+    @ApiResponse(responseCode = "404", description = "Usuario no encontrada")
+
     public EntityModel<UsuarioModel> getUsuarioById(@PathVariable int id) {
         return assembler.toModel(usuarioService.obtenerPorId(id));
     }
@@ -51,6 +55,8 @@ public class UsuarioController {
     @PostMapping
     @Operation(summary = "Crear nuevo usuario", description = "Agrega un nuevo usuario al sistema")
     @ApiResponse(responseCode = "200", description = "Usuario creado exitosamente")
+    @ApiResponse(responseCode = "404", description = "Usuario no encontrada")
+
     public EntityModel<UsuarioModel> crearUsuario(@RequestBody Model_Usuario usuario) {
         return assembler.toModel(usuarioService.agregarUsuario(usuario));
     }
@@ -58,6 +64,8 @@ public class UsuarioController {
     @PutMapping("/{id}")
     @Operation(summary = "Actualizar usuario por ID", description = "Actualiza los datos de un usuario existente")
     @ApiResponse(responseCode = "200", description = "Usuario actualizado correctamente")
+    @ApiResponse(responseCode = "404", description = "Usuario no encontrada")
+
     public EntityModel<UsuarioModel> actualizarUsuario(@PathVariable int id, @RequestBody Model_Usuario usuario) {
         return assembler.toModel(usuarioService.actualizarUsuario(id, usuario));
     }
@@ -65,6 +73,8 @@ public class UsuarioController {
     @DeleteMapping("/{id}")
     @Operation(summary = "Eliminar usuario por ID", description = "Elimina un usuario del sistema según su ID")
     @ApiResponse(responseCode = "200", description = "Usuario eliminado correctamente")
+    @ApiResponse(responseCode = "404", description = "Usuario no encontrada")
+
     public String eliminarUsuario(@PathVariable int id) {
         return usuarioService.eliminarUsuario(id);
     }

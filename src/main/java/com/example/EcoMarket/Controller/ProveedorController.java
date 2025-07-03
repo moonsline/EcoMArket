@@ -33,6 +33,8 @@ public class ProveedorController {
     @GetMapping
     @Operation(summary = "Obtener todos los proveedores", description = "Devuelve una lista con todos los proveedores registrados")
     @ApiResponse(responseCode = "200", description = "Consulta exitosa")
+    @ApiResponse(responseCode = "404", description = "Consulta no encontrada")
+
     public CollectionModel<EntityModel<ProveedorModel>> getProveedores() {
         List<Model_Proveedor> proveedores = proveedorService.obtenerTodos();
 
@@ -47,6 +49,8 @@ public class ProveedorController {
     @GetMapping("/{id}")
     @Operation(summary = "Obtener proveedor por ID", description = "Devuelve un proveedor específico según su ID")
     @ApiResponse(responseCode = "200", description = "Proveedor encontrado")
+    @ApiResponse(responseCode = "404", description = "Proveedor no encontrada")
+
     public EntityModel<ProveedorModel> getProveedoreById(@PathVariable int id) {
         Model_Proveedor proveedor = proveedorService.obtenerPorId(id);
         return assembler.toModel(proveedor);
@@ -55,6 +59,8 @@ public class ProveedorController {
     @PostMapping
     @Operation(summary = "Agregar nuevo proveedor", description = "Agrega un nuevo proveedor al sistema")
     @ApiResponse(responseCode = "200", description = "Proveedor agregado correctamente")
+    @ApiResponse(responseCode = "404", description = "Proveedor no encontrada")
+
     public EntityModel<ProveedorModel> postProveedores(@RequestBody Model_Proveedor proveedor) {
         Model_Proveedor nuevo = proveedorService.agregarProveedor(proveedor);
         return assembler.toModel(nuevo);
@@ -63,6 +69,8 @@ public class ProveedorController {
     @DeleteMapping("/{id}")
     @Operation(summary = "Eliminar proveedor por ID", description = "Elimina un proveedor del sistema según su ID")
     @ApiResponse(responseCode = "200", description = "Proveedor eliminado correctamente")
+    @ApiResponse(responseCode = "404", description = "Proveedor no encontrada")
+
     public String deleteProveedoreById(@PathVariable int id) {
         return proveedorService.eliminarProveedor(id);
     }
@@ -70,6 +78,8 @@ public class ProveedorController {
     @PutMapping("/{id}")
     @Operation(summary = "Actualizar proveedor por ID", description = "Actualiza los datos de un proveedor ya existente")
     @ApiResponse(responseCode = "200", description = "Proveedor actualizado correctamente")
+    @ApiResponse(responseCode = "404", description = "Proveedor no encontrada")
+
     public EntityModel<ProveedorModel> updateProveedor(@PathVariable int id, @RequestBody Model_Proveedor proveedor) {
         Model_Proveedor actualizado = proveedorService.actualizarProveedor(id, proveedor);
         return assembler.toModel(actualizado);

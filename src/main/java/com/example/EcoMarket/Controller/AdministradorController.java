@@ -32,6 +32,8 @@ public class AdministradorController {
     @GetMapping
     @Operation(summary = "Obtener todos los administradores", description = "Retorna una lista de todos los administradores del sistema")
     @ApiResponse(responseCode = "200", description = "Consulta exitosa")
+    @ApiResponse(responseCode = "404", description = "Administrador no encontrado")
+
     public CollectionModel<EntityModel<AdministradorModel>> getAllAdministradores() {
         List<EntityModel<AdministradorModel>> lista = adminService.obtenerTodos().stream()
                 .map(assembler::toModel)
@@ -44,6 +46,8 @@ public class AdministradorController {
     @GetMapping("/{id}")
     @Operation(summary = "Obtener administrador por ID", description = "Retorna un administrador según su ID")
     @ApiResponse(responseCode = "200", description = "Administrador encontrado")
+    @ApiResponse(responseCode = "404", description = "Administrador no encontrado")
+
     public EntityModel<AdministradorModel> getAdministradorById(@PathVariable int id) {
         return assembler.toModel(adminService.obtenerPorId(id));
     }
@@ -51,6 +55,8 @@ public class AdministradorController {
     @PostMapping
     @Operation(summary = "Crear nuevo administrador", description = "Agrega un nuevo administrador al sistema")
     @ApiResponse(responseCode = "200", description = "Administrador creado exitosamente")
+    @ApiResponse(responseCode = "404", description = "Administrador no encontrado")
+
     public EntityModel<AdministradorModel> crearAdministrador(@RequestBody Model_Administrador admin) {
         return assembler.toModel(adminService.agregarAdministrador(admin));
     }
@@ -58,6 +64,8 @@ public class AdministradorController {
     @PutMapping("/{id}")
     @Operation(summary = "Actualizar administrador por ID", description = "Actualiza los datos de un administrador existente")
     @ApiResponse(responseCode = "200", description = "Administrador actualizado correctamente")
+    @ApiResponse(responseCode = "404", description = "Administrador no encontrado")
+
     public EntityModel<AdministradorModel> actualizarAdministrador(@PathVariable int id, @RequestBody Model_Administrador admin) {
         return assembler.toModel(adminService.actualizarAdministrador(id, admin));
     }
@@ -65,6 +73,8 @@ public class AdministradorController {
     @DeleteMapping("/{id}")
     @Operation(summary = "Eliminar administrador por ID", description = "Elimina un administrador del sistema según su ID")
     @ApiResponse(responseCode = "200", description = "Administrador eliminado correctamente")
+    @ApiResponse(responseCode = "404", description = "Administrador no encontrado")
+
     public String eliminarAdministrador(@PathVariable int id) {
         return adminService.eliminarAdministrador(id);
     }

@@ -32,7 +32,9 @@ public class GerenteTiendaController {
 
     @Operation(summary = "Obtener todos los GerenteTienda", description = "Devuelve una lista de todos los gerentes de tienda registrados")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Lista de gerentes obtenida correctamente")
+            @ApiResponse(responseCode = "200", description = "Lista de gerentes obtenida correctamente"),
+            @ApiResponse(responseCode = "404", description = "Logística no encontrado")
+
     })
     @GetMapping
     public CollectionModel<EntityModel<GerenteTiendaModel>> getGerenteTienda() {
@@ -48,7 +50,8 @@ public class GerenteTiendaController {
 
     @Operation(summary = "Agregar GerenteTienda", description = "Agrega GerenteTienda a su lista")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "GerenteTienda creado correctamente")
+            @ApiResponse(responseCode = "201", description = "GerenteTienda creado correctamente"),
+            @ApiResponse(responseCode = "404", description = "GerenteTienda no encontrado")
     })
     @PostMapping
     public EntityModel<GerenteTiendaModel> postGerenteTienda(@RequestBody Model_GerenteTienda gerenteTienda)

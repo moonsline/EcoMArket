@@ -50,7 +50,9 @@ public class PedidoController {
 
     @Operation(summary = "Crear un nuevo pedido", description = "Crea un pedido con los datos proporcionados")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Pedido creado correctamente")
+            @ApiResponse(responseCode = "201", description = "Pedido creado correctamente"),
+            @ApiResponse(responseCode = "404", description = "Pedido no encontrado")
+
     })
     @PostMapping
     public EntityModel<PedidoModel> crear(@RequestBody Model_Pedido p) {
