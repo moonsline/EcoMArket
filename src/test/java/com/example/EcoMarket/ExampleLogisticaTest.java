@@ -58,11 +58,14 @@ public class ExampleLogisticaTest {
     @Test
     @DisplayName("Test controller")
     void testController(){
-        when(logisticaService.listarLogistica()).thenReturn("Lista completa");
+        Model_Logistica logistica = new Model_Logistica();
+        logistica.setNombre("Pedro Pablo Perez");
+        List<Model_Logistica> lista = List.of(logistica);
+        when(logisticaService.listarLogistica()).thenReturn(lista);
         try{
             mockMvc.perform(get("/logistica"))
                     .andExpect(status().isOk())
-                    .andExpect(content().string("Lista completa"));
+                    .andExpect(content().json("[{\"nombre\":\"Pedro Pablo Perez\"}]"));
         } catch (Exception ex){
             System.out.println(ex.getMessage());
             fail();

@@ -57,11 +57,14 @@ public class ExampleGerenteTiendaTest {
     @Test
     @DisplayName("Test controller")
     void testController(){
-        when(gerenteTiendaService.listarGerenteTienda()).thenReturn("Lista completa");
+        Model_GerenteTienda gerente = new Model_GerenteTienda();
+        gerente.setNombre("Orlando Sepulveda");
+        List<Model_GerenteTienda> lista = List.of(gerente);
+        when(gerenteTiendaService.listarGerenteTienda()).thenReturn(lista);
         try{
             mockMvc.perform(get("/gerentes"))
                     .andExpect(status().isOk())
-                    .andExpect(content().string("Lista completa"));
+                    .andExpect(content().json("[{\"nombre\":\"Orlando Sepulveda\"}]"));
         } catch (Exception ex){
             System.out.println(ex.getMessage());
             fail();
