@@ -13,13 +13,15 @@ import java.util.List;
 @NoArgsConstructor
 
 @Entity
+@Table(name = "producto")
 public class Model_Producto {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     private String nombre;
-    private float precio;
+
+    private int precio;
     private int stock;
 
     @ManyToMany(mappedBy = "productos")

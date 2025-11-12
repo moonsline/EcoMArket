@@ -87,5 +87,3 @@ public class ExampleProductoTest {
         assertEquals("Bebida desechable Coca-Cola Normal 1.5L", result.getNombre());
     }
 }
-
-

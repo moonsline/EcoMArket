@@ -6,7 +6,7 @@ import org.springframework.hateoas.RepresentationModel;
 public class ProductoModel extends RepresentationModel<ProductoModel> {
     private int id;
     private String nombre;
-    private float precio;
+    private int precio;
     private int stock;
 
     public ProductoModel(Model_Producto p) {
@@ -24,7 +24,7 @@ public class ProductoModel extends RepresentationModel<ProductoModel> {
         return nombre;
     }
 
-    public float getPrecio() {
+    public int getPrecio() {
         return precio;
     }
 
@@ -32,4 +32,3 @@ public class ProductoModel extends RepresentationModel<ProductoModel> {
         return stock;
     }
 }
-
