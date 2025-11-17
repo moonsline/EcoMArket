@@ -6,29 +6,18 @@ import org.springframework.hateoas.RepresentationModel;
 public class UsuarioModel extends RepresentationModel<UsuarioModel> {
     private Integer id;
     private String nombre;
-    private String correo;
-    private String contrasena;
+    private String email;
+    private String rol;
 
     public UsuarioModel(Model_Usuario usuario) {
         this.id = usuario.getId();
         this.nombre = usuario.getNombre();
-        this.correo = usuario.getCorreo();
-        this.contrasena = usuario.getContrasena();
+        this.email = usuario.getEmail();
+        this.rol = usuario.getRol();
     }
 
-    public Integer getId() {
-        return id;
-    }
-
-    public String getNombre() {
-        return nombre;
-    }
-
-    public String getCorreo() {
-        return correo;
-    }
-
-    public String getContrasena() {
-        return contrasena;
-    }
+    public Integer getId() { return id; }
+    public String getNombre() { return nombre; }
+    public String getEmail() { return email; }
+    public String getRol() { return rol; }
 }

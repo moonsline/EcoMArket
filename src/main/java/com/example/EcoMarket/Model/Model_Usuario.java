@@ -9,16 +9,26 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "usuario")
+@Table(name = "MODEL_USUARIO")
 public class Model_Usuario {
 
     @Id
+    // La columna ID_USUARIO ya es identidad en Oracle
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
+    @Column(name = "ID_USUARIO")
     private Integer id;
+
+    @Column(name = "EMAIL")
+    private String email;
+
+    @Column(name = "NOMBRE")
     private String nombre;
-    private String correo; // Cambiado a "correo" para ser coherente
-    @Column(name = "password")
-    private String contrasena; // Mapeado a la columna 'password' en la BD
+
+    @Column(name = "PASSWORD")
+    private String password;
+
+    @Column(name = "ROL")
     private String rol;
+
+    // Campo 'CORREO' eliminado del modelo; la BD será normalizada a solo EMAIL
 }

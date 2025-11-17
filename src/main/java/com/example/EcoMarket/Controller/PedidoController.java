@@ -1,22 +1,29 @@
 package com.example.EcoMarket.Controller;
 
-
 import com.example.EcoMarket.Assemblers.PedidoModelAssembler;
 import com.example.EcoMarket.Model.Model_Pedido;
-import com.example.EcoMarket.Repository.PedidoRepository;
 import com.example.EcoMarket.Service.PedidoService;
 import com.example.EcoMarket.hateoas.PedidoModel;
+
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.stream.Collectors;
 
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
+
+/**
+ * Controlador encargado de manejar las operaciones CRUD de los pedidos.
+ * Utiliza HATEOAS para devolver enlaces navegables dentro de las respuestas.
+ */
 @RestController
 @RequestMapping("/pedidos")
 @Tag(name = "Controlador Pedido", description = "Gestión de pedidos y asignación de productos")
@@ -24,74 +31,121 @@ public class PedidoController {
 
     @Autowired
     private PedidoService service;
+
     @Autowired
     private PedidoModelAssembler assembler;
 
-    @Operation(summary = "Obtener todos los pedidos", description = "Devuelve una lista de todos los pedidos registrados")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Lista de pedidos obtenida correctamente")
-    })
+    // -------------------------------------------------------------------------
+    // GET: Obtener todos los pedidos
+    // -------------------------------------------------------------------------
+    @Operation(summary = "Obtener todos los pedidos", description = "Devuelve la lista completa de pedidos")
+    @ApiResponse(responseCode = "200", description = "Lista obtenida correctamente")
     @GetMapping
     public CollectionModel<EntityModel<PedidoModel>> getAllPedidos() {
-        return CollectionModel.of(service.obtenerTodos().stream()
+
+        var pedidos = service.obtenerTodos()
+                .stream()
                 .map(assembler::toModel)
-                .collect(Collectors.toList()));
+                .collect(Collectors.toList());
+
+        // Agrego un link al mismo endpoint como buena práctica HATEOAS
+        return CollectionModel.of(pedidos)
+                .add(linkTo(methodOn(PedidoController.class).getAllPedidos()).withSelfRel());
     }
 
-    @Operation(summary = "Obtener pedido por ID", description = "Devuelve un pedido específico según su ID")
-    @ApiResponses(value = {
+    // -------------------------------------------------------------------------
+    // GET: Obtener pedido por ID
+    // -------------------------------------------------------------------------
+    @Operation(summary = "Obtener pedido por ID")
+    @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Pedido encontrado"),
-            @ApiResponse(responseCode = "404", description = "Pedido no encontrado")
+            @ApiResponse(responseCode = "404", description = "No existe el pedido")
     })
     @GetMapping("/{id}")
     public EntityModel<PedidoModel> getPedidoById(@PathVariable int id) {
         return assembler.toModel(service.obtenerPorId(id));
     }
 
-    @Operation(summary = "Crear un nuevo pedido", description = "Crea un pedido con los datos proporcionados")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Pedido creado correctamente"),
-            @ApiResponse(responseCode = "404", description = "Pedido no encontrado")
-
+    // -------------------------------------------------------------------------
+    // POST: Crear un nuevo pedido
+    // -------------------------------------------------------------------------
+    @Operation(summary = "Crear un pedido nuevo")
+    @ApiResponses({
+            @ApiResponse(responseCode = "201", description = "Pedido creado correctamente")
     })
     @PostMapping
-    public EntityModel<PedidoModel> crear(@RequestBody Model_Pedido p) {
-        return assembler.toModel(service.agregar(p));
+    public ResponseEntity<EntityModel<PedidoModel>> crear(@RequestBody Model_Pedido p) {
+
+        var pedidoGuardado = service.agregar(p);
+        var entityModel = assembler.toModel(pedidoGuardado);
+
+        // Devuelvo código 201 Created + ubicación del recurso creado
+        return ResponseEntity
+                .created(entityModel.getRequiredLink("self").toUri())
+                .body(entityModel);
     }
-    @Operation(summary = "Actualizar un pedido", description = "Actualiza los datos de un pedido existente")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Pedido actualizado correctamente"),
+
+    // -------------------------------------------------------------------------
+    // PUT: Actualizar un pedido existente
+    // -------------------------------------------------------------------------
+    @Operation(summary = "Actualizar un pedido existente")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Pedido actualizado"),
             @ApiResponse(responseCode = "404", description = "Pedido no encontrado")
     })
     @PutMapping("/{id}")
-    public EntityModel<PedidoModel> actualizar(@PathVariable int id, @RequestBody Model_Pedido p) {
-        return assembler.toModel(service.actualizar(id, p));
+    public ResponseEntity<EntityModel<PedidoModel>> actualizar(@PathVariable int id,
+                                                               @RequestBody Model_Pedido p) {
+
+        var pedidoActualizado = service.actualizar(id, p);
+        return ResponseEntity.ok(assembler.toModel(pedidoActualizado));
     }
-    @Operation(summary = "Eliminar un pedido", description = "Elimina un pedido según su ID")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Pedido eliminado correctamente"),
+
+    // -------------------------------------------------------------------------
+    // DELETE: Eliminar un pedido
+    // -------------------------------------------------------------------------
+    @Operation(summary = "Eliminar pedido por ID")
+    @ApiResponses({
+            @ApiResponse(responseCode = "204", description = "Pedido eliminado"),
             @ApiResponse(responseCode = "404", description = "Pedido no encontrado")
     })
     @DeleteMapping("/{id}")
-    public String eliminar(@PathVariable int id) {
-        return service.eliminar(id);
+    public ResponseEntity<?> eliminar(@PathVariable int id) {
+
+        service.eliminar(id);
+        // En REST es correcto devolver 204 No Content al eliminar
+        return ResponseEntity.noContent().build();
     }
-    @Operation(summary = "Agregar producto a pedido", description = "Asocia un producto existente a un pedido")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Producto agregado al pedido correctamente"),
+
+    // -------------------------------------------------------------------------
+    // POST: Agregar producto a un pedido
+    // -------------------------------------------------------------------------
+    @Operation(summary = "Agregar producto a un pedido existente")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Producto agregado"),
             @ApiResponse(responseCode = "404", description = "Pedido o producto no encontrado")
     })
     @PostMapping("/{idPedido}/productos/{idProducto}")
-    public EntityModel<PedidoModel> agregarProducto(@PathVariable int idPedido, @PathVariable int idProducto) {
-        return assembler.toModel(service.agregarProducto(idPedido, idProducto));
+    public ResponseEntity<EntityModel<PedidoModel>> agregarProducto(@PathVariable int idPedido,
+                                                                    @PathVariable int idProducto) {
+
+        var actualizado = service.agregarProducto(idPedido, idProducto);
+        return ResponseEntity.ok(assembler.toModel(actualizado));
     }
-    @Operation(summary = "Quitar producto de pedido", description = "Elimina la asociación de un producto a un pedido")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Producto quitado del pedido correctamente"),
+
+    // -------------------------------------------------------------------------
+    // DELETE: Quitar producto de pedido
+    // -------------------------------------------------------------------------
+    @Operation(summary = "Quitar producto de un pedido")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Producto quitado"),
             @ApiResponse(responseCode = "404", description = "Pedido o producto no encontrado")
     })
     @DeleteMapping("/{idPedido}/productos/{idProducto}")
-    public EntityModel<PedidoModel> quitarProducto(@PathVariable int idPedido, @PathVariable int idProducto) {
-        return assembler.toModel(service.quitarProducto(idPedido, idProducto));
+    public ResponseEntity<EntityModel<PedidoModel>> quitarProducto(@PathVariable int idPedido,
+                                                                   @PathVariable int idProducto) {
+
+        var actualizado = service.quitarProducto(idPedido, idProducto);
+        return ResponseEntity.ok(assembler.toModel(actualizado));
     }
 }

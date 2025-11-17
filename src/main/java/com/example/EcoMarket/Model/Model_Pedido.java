@@ -1,38 +1,67 @@
 package com.example.EcoMarket.Model;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Date;
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
 
+/**
+ * Entidad Pedido.
+ * Representa un pedido realizado por un cliente.
+ * Uso @Entity para que JPA mapee esta clase con la tabla correspondiente en la BD.
+ */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-
-// Tanto en pedido como en producto tendremos que hacer una migración para que sea compatible con hateoas
-// averiguando me di cuenta qué si solo dejamos la lista de productos como un atributo en pedido, podría caer en loops infinitos en que los id
-// de productos a pedidos y como tienen una relación de muchos a muchos, podría ser problemáticos.
-// parece que la solución más viable es crear enlaces de HATEOAS para que a partir de un pedido se dirija a los productos que le pertenecen.
+@Table(name = "MODEL_PEDIDO")
 public class Model_Pedido {
+
+    /**
+     * ID autogenerado.
+     * Uso IDENTITY porque nuestra base Oracle ya tiene el trigger + secuencia en el DDL.
+     */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "ID_PEDIDO")
     private int idPedido;
-    private Date fecha;
-    private String estado;
-    private float total;
 
+    /**
+     * Fecha en que se generó el pedido.
+     * Uso LocalDateTime para guardar fecha y hora.
+     */
+    @Column(name = "FECHA")
+    private LocalDateTime fecha;
+
+    /**
+     * Estado del pedido (ej: "PENDIENTE", "ENVIADO", "ENTREGADO").
+     */
+    @Column(name = "ESTADO")
+    private String estado;
+
+    /**
+     * Total del pedido.
+     * Uso BigDecimal para evitar problemas de precisión en montos.
+     */
+    @Column(name = "TOTAL")
+    private BigDecimal total;
+
+    /**
+     * Relación ManyToMany con productos.
+     * Un pedido puede tener varios productos y un producto puede estar en varios pedidos.
+     * La anotación @JsonIgnore evita recursividad al convertir a JSON.
+     */
     @ManyToMany
     @JoinTable(
-            name = "pedido_producto", //Nombre de la tabla intermedia
-            joinColumns = @JoinColumn(name="pedido_id"),
-            inverseJoinColumns = @JoinColumn(name="producto_id")
+            name = "PEDIDO_PRODUCTO",
+            joinColumns = @JoinColumn(name = "PEDIDO_ID"),
+            inverseJoinColumns = @JoinColumn(name = "PRODUCTO_ID")
     )
+
     private List<Model_Producto> productos;
-
-
-
-
 }

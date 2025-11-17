@@ -11,6 +11,8 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -54,11 +56,23 @@ public class UsuarioController {
 
     @PostMapping
     @Operation(summary = "Crear nuevo usuario", description = "Agrega un nuevo usuario al sistema")
-    @ApiResponse(responseCode = "200", description = "Usuario creado exitosamente")
-    @ApiResponse(responseCode = "404", description = "Usuario no encontrada")
-
-    public EntityModel<UsuarioModel> crearUsuario(@RequestBody Model_Usuario usuario) {
-        return assembler.toModel(usuarioService.agregarUsuario(usuario));
+    @ApiResponse(responseCode = "201", description = "Usuario creado exitosamente")
+    public ResponseEntity<?> crearUsuario(@RequestBody Model_Usuario usuario) {
+        try {
+            // normalizar email a minúsculas para evitar duplicados por case
+            if (usuario.getEmail() != null) {
+                usuario.setEmail(usuario.getEmail().toLowerCase());
+            }
+            Model_Usuario creado = usuarioService.agregarUsuario(usuario);
+            return ResponseEntity.status(HttpStatus.CREATED).body(assembler.toModel(creado));
+        } catch (IllegalStateException e) {
+            // email duplicado u otra integridad
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al crear usuario");
+        }
     }
 
     @PutMapping("/{id}")
@@ -78,4 +92,5 @@ public class UsuarioController {
     public String eliminarUsuario(@PathVariable int id) {
         return usuarioService.eliminarUsuario(id);
     }
+
 }

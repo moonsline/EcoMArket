@@ -39,6 +39,7 @@ public class ProductoController {
                 .map(assembler::toModel)
                 .collect(Collectors.toList()));
     }
+
     @Operation(summary = "Obtener producto por ID", description = "Devuelve un producto específico según su ID")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Producto encontrado"),
@@ -48,6 +49,7 @@ public class ProductoController {
     public EntityModel<ProductoModel> getProductoById(@PathVariable int id) {
         return assembler.toModel(service.obtenerPorId(id));
     }
+
     @Operation(summary = "Crear un nuevo producto", description = "Crea un producto con los datos proporcionados")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Producto creado correctamente"),
@@ -58,6 +60,7 @@ public class ProductoController {
     public EntityModel<ProductoModel> crear(@RequestBody Model_Producto p) {
         return assembler.toModel(service.agregar(p));
     }
+
     @Operation(summary = "Actualizar un producto", description = "Actualiza los datos de un producto existente")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Producto actualizado correctamente"),
@@ -67,6 +70,7 @@ public class ProductoController {
     public EntityModel<ProductoModel> actualizar(@PathVariable int id, @RequestBody Model_Producto p) {
         return assembler.toModel(service.actualizar(id, p));
     }
+
     @Operation(summary = "Eliminar un producto", description = "Elimina un producto según su ID")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Producto eliminado correctamente"),
