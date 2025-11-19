@@ -2,6 +2,8 @@ package com.example.EcoMarket.Service;
 
 import com.example.EcoMarket.Model.Model_Usuario;
 import com.example.EcoMarket.Repository.UsuarioRepository;
+import com.example.EcoMarket.dto.UsuarioRegistroDTO;
+import com.example.EcoMarket.dto.UsuarioRespuestaDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,23 +19,29 @@ public class UsuarioService {
     @Autowired
     private UsuarioRepository usuarioRepo;
 
-    @Transactional
-    public Model_Usuario agregarUsuario(Model_Usuario usuario) {
-        // Ignorar cualquier id entrante: la BD lo generará
+    // Elimino el método agregarUsuario(UsuarioModel dto) porque no se usa y genera error de compilación.
+
+    // Método para crear usuario desde DTO de registro
+    public Model_Usuario agregarUsuarioDesdeDTO(UsuarioRegistroDTO dto) {
+        // Creo la entidad usando solo los datos necesarios, así evito problemas de seguridad.
+        Model_Usuario usuario = new Model_Usuario();
         usuario.setId(null);
-        // Normalizar email
+        usuario.setNombre(dto.getNombre());
+        usuario.setEmail(dto.getEmail());
+        usuario.setPassword(dto.getPassword());
+        usuario.setRut(dto.getRut());
+        usuario.setRol("USER"); // Por defecto, el rol es USER. Si el registro es desde backoffice, puedes cambiar esto.
+        usuario.setActivo(1); // El usuario se crea activo por defecto.
+        // Validaciones y lógica igual que antes...
         if (usuario.getEmail() != null) {
             usuario.setEmail(usuario.getEmail().toLowerCase());
         }
-        // Validar duplicado por email (case-insensitive)
         if (usuarioRepo.findByEmailIgnoreCase(usuario.getEmail()).isPresent()) {
             throw new IllegalStateException("El email ya está registrado");
         }
-        // Validación mínima de password
         if (usuario.getPassword() == null || usuario.getPassword().isBlank()) {
             throw new IllegalArgumentException("La contraseña es obligatoria");
         }
-        // Opción A: guardamos password en texto plano (solo uso académico)
         return usuarioRepo.save(usuario);
     }
 
@@ -58,6 +66,20 @@ public class UsuarioService {
         return usuarioRepo.save(existente);
     }
 
+    // Método para actualizar usuario desde DTO de registro
+    public Model_Usuario actualizarUsuarioDesdeDTO(int id, UsuarioRegistroDTO dto) {
+        Model_Usuario existente = obtenerPorId(id);
+        existente.setNombre(dto.getNombre());
+        existente.setEmail(dto.getEmail());
+        existente.setRut(dto.getRut());
+        // Solo actualizo la contraseña si viene en el DTO y no está vacía
+        if (dto.getPassword() != null && !dto.getPassword().isBlank()) {
+            existente.setPassword(dto.getPassword());
+        }
+        // El rol y activo pueden mantenerse igual o ajustarse según la lógica de negocio
+        return usuarioRepo.save(existente);
+    }
+
     public Model_Usuario loginPlano(String email, String password) {
         Model_Usuario usuario = usuarioRepo.findByEmailIgnoreCase(email.toLowerCase())
                 .orElseThrow(() -> new RuntimeException("No existe usuario"));
@@ -74,6 +96,19 @@ public class UsuarioService {
             return "Usuario eliminado correctamente";
         }
         return "Usuario no encontrado";
+    }
+
+    // Método para convertir la entidad a DTO de respuesta
+    public UsuarioRespuestaDTO convertirARespuestaDTO(Model_Usuario usuario) {
+        // Solo incluyo los datos públicos, nunca la contraseña.
+        UsuarioRespuestaDTO dto = new UsuarioRespuestaDTO();
+        dto.setId(usuario.getId());
+        dto.setNombre(usuario.getNombre());
+        dto.setEmail(usuario.getEmail());
+        dto.setRut(usuario.getRut());
+        dto.setRol(usuario.getRol());
+        dto.setActivo(usuario.getActivo());
+        return dto;
     }
 
     // Para pruebas si necesitas otra creación de instancias

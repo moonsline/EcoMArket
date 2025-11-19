@@ -30,5 +30,11 @@ public class Model_Usuario {
     @Column(name = "ROL")
     private String rol;
 
-    // Campo 'CORREO' eliminado del modelo; la BD será normalizada a solo EMAIL
+    @Column(name = "RUT")
+    private String rut;
+
+    @Column(name = "ACTIVO")
+    private Integer activo;
+
+
 }
