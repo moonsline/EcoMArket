@@ -26,7 +26,7 @@ public class Model_Producto {
     private int precio;
 
     private int stock;
-
+    @Column(name = "IMG")
     private String img;
 
     @Column(name = "EXPIRATION_DATE")

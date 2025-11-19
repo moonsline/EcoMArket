@@ -8,12 +8,14 @@ public class ProductoModel extends RepresentationModel<ProductoModel> {
     private String nombre;
     private int precio;
     private int stock;
+    private String img;
 
     public ProductoModel(Model_Producto p) {
         this.id = p.getId();
         this.nombre = p.getNombre();
         this.precio = p.getPrecio();
         this.stock = p.getStock();
+        this.img = p.getImg();
     }
 
     public int getId() {
@@ -30,5 +32,9 @@ public class ProductoModel extends RepresentationModel<ProductoModel> {
 
     public int getStock() {
         return stock;
+    }
+
+    public String getImg() {
+        return img;
     }
 }
