@@ -5,6 +5,7 @@ import com.example.EcoMarket.Assemblers.ProductoModelAssembler;
 import com.example.EcoMarket.Model.Model_Producto;
 import com.example.EcoMarket.Service.ProductoService;
 import com.example.EcoMarket.Service.FileStorageService;
+import com.example.EcoMarket.dto.ProductoRequestSchema;
 import com.example.EcoMarket.hateoas.ProductoModel;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -16,6 +17,7 @@ import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.core.io.Resource;
 import org.springframework.web.multipart.MultipartFile;
@@ -45,6 +47,7 @@ public class ProductoController {
 
     })
     @GetMapping
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     public CollectionModel<EntityModel<ProductoModel>> getAllProductos() {
         return CollectionModel.of(service.obtenerTodos().stream()
                 .map(assembler::toModel)
@@ -57,10 +60,12 @@ public class ProductoController {
             @ApiResponse(responseCode = "404", description = "Producto no encontrado")
     })
     @GetMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     public EntityModel<ProductoModel> getProductoById(@PathVariable int id) {
         return assembler.toModel(service.obtenerPorId(id));
     }
     @GetMapping("/uploads/{filename:.+}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     public ResponseEntity<Resource> getImage(@PathVariable String filename) {
         try {
             Path filePath = Paths.get("uploads").resolve(filename).normalize();
@@ -91,7 +96,16 @@ public class ProductoController {
             @ApiResponse(responseCode = "201", description = "Producto creado correctamente"),
             @ApiResponse(responseCode = "404", description = "Producto no encontrado")
     })
+    @io.swagger.v3.oas.annotations.parameters.RequestBody(
+            content = @io.swagger.v3.oas.annotations.media.Content(
+                    mediaType = MediaType.MULTIPART_FORM_DATA_VALUE,
+                    schema = @io.swagger.v3.oas.annotations.media.Schema(
+                            implementation = ProductoRequestSchema.class
+                    )
+            )
+    )
     @PostMapping(consumes = {"multipart/form-data"})
+    @PreAuthorize("hasRole('ADMIN')")
     public EntityModel<ProductoModel> crear(
         @RequestPart("producto") Model_Producto p,
         @RequestPart(value = "img", required = false) MultipartFile img
@@ -105,6 +119,7 @@ public class ProductoController {
             @ApiResponse(responseCode = "404", description = "Producto no encontrado")
     })
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public EntityModel<ProductoModel> actualizar(@PathVariable int id, @RequestBody Model_Producto p) {
         return assembler.toModel(service.actualizar(id, p));
     }
@@ -115,6 +130,7 @@ public class ProductoController {
             @ApiResponse(responseCode = "404", description = "Producto no encontrado")
     })
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public String eliminar(@PathVariable int id) {
         return service.eliminar(id);
     }

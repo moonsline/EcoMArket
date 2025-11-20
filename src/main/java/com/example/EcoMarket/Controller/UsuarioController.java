@@ -11,6 +11,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -24,6 +25,7 @@ public class UsuarioController {
     @Autowired
     private UsuarioService usuarioService;
 
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping
     @Operation(summary = "Obtener todos los usuarios", description = "Retorna una lista de todos los usuarios del sistema")
     @ApiResponse(responseCode = "200", description = "Consulta exitosa")
@@ -35,7 +37,7 @@ public class UsuarioController {
             .collect(Collectors.toList());
         return ResponseEntity.ok(lista);
     }
-
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/{id}")
     @Operation(summary = "Obtener usuario por ID", description = "Retorna un usuario según su ID")
     @ApiResponse(responseCode = "200", description = "Usuario encontrado")
@@ -64,7 +66,7 @@ public class UsuarioController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
-
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}")
     @Operation(summary = "Actualizar usuario por ID", description = "Actualiza los datos de un usuario existente")
     @ApiResponse(responseCode = "200", description = "Usuario actualizado correctamente")
@@ -75,7 +77,7 @@ public class UsuarioController {
         UsuarioRespuestaDTO respuesta = usuarioService.convertirARespuestaDTO(actualizado);
         return ResponseEntity.ok(respuesta);
     }
-
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     @Operation(summary = "Eliminar usuario por ID", description = "Elimina un usuario del sistema según su ID")
     @ApiResponse(responseCode = "200", description = "Usuario eliminado correctamente")

@@ -5,6 +5,7 @@ import com.example.EcoMarket.Repository.UsuarioRepository;
 import com.example.EcoMarket.dto.UsuarioRegistroDTO;
 import com.example.EcoMarket.dto.UsuarioRespuestaDTO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,6 +19,9 @@ public class UsuarioService {
 
     @Autowired
     private UsuarioRepository usuarioRepo;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
 
     // Elimino el método agregarUsuario(UsuarioModel dto) porque no se usa y genera error de compilación.
 
@@ -28,7 +32,8 @@ public class UsuarioService {
         usuario.setId(null);
         usuario.setNombre(dto.getNombre());
         usuario.setEmail(dto.getEmail());
-        usuario.setPassword(dto.getPassword());
+        usuario.setPassword(passwordEncoder.encode(dto.getPassword()));
+
         usuario.setRut(dto.getRut());
         usuario.setRol("USER"); // Por defecto, el rol es USER. Si el registro es desde backoffice, puedes cambiar esto.
         usuario.setActivo(1); // El usuario se crea activo por defecto.
@@ -60,7 +65,7 @@ public class UsuarioService {
         existente.setEmail(usuario.getEmail());
         // Si viene nueva contraseña, la actualizamos
         if (usuario.getPassword() != null && !usuario.getPassword().isBlank()) {
-            existente.setPassword(usuario.getPassword());
+            existente.setPassword(passwordEncoder.encode(usuario.getPassword()));
         }
         existente.setRol(usuario.getRol());
         return usuarioRepo.save(existente);
@@ -74,20 +79,10 @@ public class UsuarioService {
         existente.setRut(dto.getRut());
         // Solo actualizo la contraseña si viene en el DTO y no está vacía
         if (dto.getPassword() != null && !dto.getPassword().isBlank()) {
-            existente.setPassword(dto.getPassword());
+            existente.setPassword(passwordEncoder.encode(dto.getPassword()));
         }
         // El rol y activo pueden mantenerse igual o ajustarse según la lógica de negocio
         return usuarioRepo.save(existente);
-    }
-
-    public Model_Usuario loginPlano(String email, String password) {
-        Model_Usuario usuario = usuarioRepo.findByEmailIgnoreCase(email.toLowerCase())
-                .orElseThrow(() -> new RuntimeException("No existe usuario"));
-        // Comparar password en texto plano
-        if (!usuario.getPassword().equals(password)) {
-            throw new RuntimeException("Credenciales inválidas");
-        }
-        return usuario;
     }
 
     public String eliminarUsuario(int id) {

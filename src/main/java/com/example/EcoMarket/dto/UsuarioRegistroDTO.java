@@ -7,7 +7,7 @@ public class UsuarioRegistroDTO {
     private String email;
     private String password;
     private String rut;
-
+    private String rol;
     // Constructor vacío para compatibilidad con frameworks y deserialización
     public UsuarioRegistroDTO() {}
 
@@ -20,4 +20,5 @@ public class UsuarioRegistroDTO {
     public void setPassword(String password) { this.password = password; }
     public String getRut() { return rut; }
     public void setRut(String rut) { this.rut = rut; }
+    public  String getRol() { return rol; }
 }
