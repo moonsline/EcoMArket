@@ -64,7 +64,7 @@ public class SecurityConfig {
                                 "/swagger-ui/**"
                         ).permitAll()
                         .requestMatchers(HttpMethod.POST, "/usuarios").permitAll()
-
+                        .requestMatchers(HttpMethod.GET, "/productos/**").permitAll() // acceso público
                         // El resto queda protegido
                         .anyRequest().authenticated()
                 )

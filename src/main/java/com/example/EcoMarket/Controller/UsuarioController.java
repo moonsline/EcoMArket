@@ -13,7 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-
+import java.util.Map;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -51,32 +51,51 @@ public class UsuarioController {
     @PostMapping
     @Operation(summary = "Crear nuevo usuario", description = "Agrega un nuevo usuario al sistema")
     @ApiResponse(responseCode = "201", description = "Usuario creado exitosamente")
-    public ResponseEntity<UsuarioRespuestaDTO> crearUsuario(@RequestBody UsuarioRegistroDTO usuarioDto) {
-        // Recibo solo los datos necesarios para crear el usuario, así evito que el frontend envíe datos sensibles o innecesarios.
+    public ResponseEntity<?> crearUsuario(@RequestBody UsuarioRegistroDTO usuarioDto) {
         try {
+            if (usuarioDto.getPassword() == null || usuarioDto.getPassword().isBlank()) {
+                return ResponseEntity.badRequest()
+                        .body(Map.of("error", "La contraseña es obligatoria"));
+            }
             Model_Usuario creado = usuarioService.agregarUsuarioDesdeDTO(usuarioDto);
-            // Transformo la entidad a DTO de respuesta para no exponer la contraseña ni otros datos sensibles.
             UsuarioRespuestaDTO respuesta = usuarioService.convertirARespuestaDTO(creado);
             return ResponseEntity.status(HttpStatus.CREATED).body(respuesta);
         } catch (IllegalStateException e) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).build();
+            return ResponseEntity.status(HttpStatus.CONFLICT)
+                    .body(Map.of("error", e.getMessage()));
         } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.badRequest()
+                    .body(Map.of("error", e.getMessage()));
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of("error", e.getMessage()));
         }
     }
+
+
     @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}")
     @Operation(summary = "Actualizar usuario por ID", description = "Actualiza los datos de un usuario existente")
     @ApiResponse(responseCode = "200", description = "Usuario actualizado correctamente")
-    @ApiResponse(responseCode = "404", description = "Usuario no encontrada")
-    public ResponseEntity<UsuarioRespuestaDTO> actualizarUsuario(@PathVariable int id, @RequestBody UsuarioRegistroDTO usuarioDto) {
-        // Actualizo el usuario usando los datos del DTO de registro, así mantengo la seguridad y simplicidad.
-        Model_Usuario actualizado = usuarioService.actualizarUsuarioDesdeDTO(id, usuarioDto);
-        UsuarioRespuestaDTO respuesta = usuarioService.convertirARespuestaDTO(actualizado);
-        return ResponseEntity.ok(respuesta);
+    @ApiResponse(responseCode = "404", description = "Usuario no encontrado")
+    public ResponseEntity<Object> actualizarUsuario(@PathVariable int id, @RequestBody UsuarioRegistroDTO usuarioDto) {
+        try {
+            Model_Usuario actualizado = usuarioService.actualizarUsuarioDesdeDTO(id, usuarioDto);
+            UsuarioRespuestaDTO respuesta = usuarioService.convertirARespuestaDTO(actualizado);
+            return ResponseEntity.ok(respuesta);
+        } catch (IllegalStateException e) {
+            return ResponseEntity.status(HttpStatus.CONFLICT)
+                    .body(Map.of("error", e.getMessage()));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest()
+                    .body(Map.of("error", e.getMessage()));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of("error", "Error interno del servidor"));
+        }
     }
+
+
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     @Operation(summary = "Eliminar usuario por ID", description = "Elimina un usuario del sistema según su ID")

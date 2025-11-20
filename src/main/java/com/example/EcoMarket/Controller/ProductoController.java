@@ -47,7 +47,7 @@ public class ProductoController {
 
     })
     @GetMapping
-    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
+
     public CollectionModel<EntityModel<ProductoModel>> getAllProductos() {
         return CollectionModel.of(service.obtenerTodos().stream()
                 .map(assembler::toModel)
@@ -60,12 +60,12 @@ public class ProductoController {
             @ApiResponse(responseCode = "404", description = "Producto no encontrado")
     })
     @GetMapping("/{id}")
-    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
+
     public EntityModel<ProductoModel> getProductoById(@PathVariable int id) {
         return assembler.toModel(service.obtenerPorId(id));
     }
     @GetMapping("/uploads/{filename:.+}")
-    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
+
     public ResponseEntity<Resource> getImage(@PathVariable String filename) {
         try {
             Path filePath = Paths.get("uploads").resolve(filename).normalize();
