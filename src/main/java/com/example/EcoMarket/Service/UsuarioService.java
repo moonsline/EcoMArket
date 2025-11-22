@@ -27,15 +27,18 @@ public class UsuarioService {
 
     // Método para crear usuario desde DTO de registro
     public Model_Usuario agregarUsuarioDesdeDTO(UsuarioRegistroDTO dto) {
-        // Creo la entidad usando solo los datos necesarios, así evito problemas de seguridad.
         Model_Usuario usuario = new Model_Usuario();
         usuario.setId(null);
         usuario.setNombre(dto.getNombre());
         usuario.setEmail(dto.getEmail());
         usuario.setPassword(passwordEncoder.encode(dto.getPassword()));
-
         usuario.setRut(dto.getRut());
-        usuario.setRol("USER"); // Por defecto, el rol es USER. Si el registro es desde backoffice, puedes cambiar esto.
+        // Asignar rol: si viene en el DTO y es válido, usarlo; si no, por defecto USER
+        if (dto.getRol() != null && !dto.getRol().isBlank()) {
+            usuario.setRol(dto.getRol());
+        } else {
+            usuario.setRol("USER");
+        }
         usuario.setActivo(1); // El usuario se crea activo por defecto.
         // Validaciones y lógica igual que antes...
         if (usuario.getEmail() != null) {
@@ -77,10 +80,14 @@ public class UsuarioService {
         existente.setNombre(dto.getNombre());
         existente.setEmail(dto.getEmail());
         existente.setRut(dto.getRut());
-        // Solo actualizo la contraseña si viene en el DTO y no está vacía
         if (dto.getPassword() != null && !dto.getPassword().isBlank()) {
             existente.setPassword(passwordEncoder.encode(dto.getPassword()));
         }
+        // Asignar rol: si viene en el DTO y es válido, usarlo; si no, mantener el actual
+        if (dto.getRol() != null && !dto.getRol().isBlank()) {
+            existente.setRol(dto.getRol());
+        }
+
         // El rol y activo pueden mantenerse igual o ajustarse según la lógica de negocio
         return usuarioRepo.save(existente);
     }

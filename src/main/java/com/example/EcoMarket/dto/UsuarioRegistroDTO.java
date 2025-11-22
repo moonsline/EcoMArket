@@ -21,4 +21,8 @@ public class UsuarioRegistroDTO {
     public String getRut() { return rut; }
     public void setRut(String rut) { this.rut = rut; }
     public  String getRol() { return rol; }
+    public void setRol(String rol) {
+        this.rol = rol;
+    }
+
 }

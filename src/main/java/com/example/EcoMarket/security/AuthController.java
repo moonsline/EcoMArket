@@ -12,6 +12,8 @@ import com.example.EcoMarket.dto.LoginRequest;
 import com.example.EcoMarket.dto.LoginResponse;
 import com.example.EcoMarket.utils.JwtUtil;
 
+import java.util.Map;
+
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
@@ -28,32 +30,37 @@ public class AuthController {
      * y devuelve un token JWT que el frontend usará en cada request.
      */
     @PostMapping("/login")
-    public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest request) {
+    public ResponseEntity<?> login(@RequestBody LoginRequest request) {
+        try {
+            // 1) Creamos un objeto con las credenciales recibidas
+            UsernamePasswordAuthenticationToken authToken =
+                    new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword());
 
-        // 1) Creamos un objeto con las credenciales recibidas
-        UsernamePasswordAuthenticationToken authToken =
-                new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword());
+            // 2) Le pedimos a Spring Security que valide estas credenciales
+            Authentication authentication = authenticationManager.authenticate(authToken);
 
-        // 2) Le pedimos a Spring Security que valide estas credenciales
-        Authentication authentication = authenticationManager.authenticate(authToken);
+            // 3) Guardamos la autenticación en el contexto de Spring (no obligatorio, pero buena práctica)
+            SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        // 3) Guardamos la autenticación en el contexto de Spring (no obligatorio, pero buena práctica)
-        SecurityContextHolder.getContext().setAuthentication(authentication);
+            // 4) Generamos un token JWT usando el email del usuario autenticado
+            String jwt = jwtUtil.generateToken(authentication);
 
-        // 4) Generamos un token JWT usando el email del usuario autenticado
-        String jwt = jwtUtil.generateToken(authentication);
+            // 5) Creamos la respuesta que enviaremos al frontend
+            LoginResponse response = new LoginResponse(
+                    request.getEmail(),
+                    jwt,
+                    authentication.getAuthorities()
+                            .stream()
+                            .findFirst()
+                            .map(a -> a.getAuthority())
+                            .orElse("ROLE_USER")
+            );
 
-        // 5) Creamos la respuesta que enviaremos al frontend
-        LoginResponse response = new LoginResponse(
-                request.getEmail(),
-                jwt,
-                authentication.getAuthorities()
-                        .stream()
-                        .findFirst()
-                        .map(a -> a.getAuthority())
-                        .orElse("ROLE_USER")
-        );
-
-        return ResponseEntity.ok(response);
+            return ResponseEntity.ok(response);
+        } catch (org.springframework.security.authentication.BadCredentialsException e) {
+            return ResponseEntity.status(401).body(Map.of("message", "Credenciales inválidas"));
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body(Map.of("message", "Error interno del servidor"));
+        }
     }
 }
