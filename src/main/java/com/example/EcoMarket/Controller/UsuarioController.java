@@ -16,11 +16,15 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Map;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @RestController
 @RequestMapping("/usuarios")
 @Tag(name = "Controlador Usuario", description = "Servicio de gestión de usuarios del sistema")
 public class UsuarioController {
+
+    private static final Logger log = LoggerFactory.getLogger(UsuarioController.class);
 
     @Autowired
     private UsuarioService usuarioService;
@@ -52,23 +56,29 @@ public class UsuarioController {
     @Operation(summary = "Crear nuevo usuario", description = "Agrega un nuevo usuario al sistema")
     @ApiResponse(responseCode = "201", description = "Usuario creado exitosamente")
     public ResponseEntity<?> crearUsuario(@RequestBody UsuarioRegistroDTO usuarioDto) {
+        log.debug("Payload recibido para crear usuario: {}", usuarioDto);
         try {
             if (usuarioDto.getPassword() == null || usuarioDto.getPassword().isBlank()) {
+                log.warn("Intento de creación de usuario sin contraseña");
                 return ResponseEntity.badRequest()
                         .body(Map.of("error", "La contraseña es obligatoria"));
             }
             Model_Usuario creado = usuarioService.agregarUsuarioDesdeDTO(usuarioDto);
             UsuarioRespuestaDTO respuesta = usuarioService.convertirARespuestaDTO(creado);
+            log.debug("Usuario creado exitosamente: {}", respuesta);
             return ResponseEntity.status(HttpStatus.CREATED).body(respuesta);
         } catch (IllegalStateException e) {
+            log.error("Error de estado al crear usuario: {}", e.getMessage());
             return ResponseEntity.status(HttpStatus.CONFLICT)
                     .body(Map.of("error", e.getMessage()));
         } catch (IllegalArgumentException e) {
+            log.error("Error de argumento al crear usuario: {}", e.getMessage());
             return ResponseEntity.badRequest()
                     .body(Map.of("error", e.getMessage()));
         } catch (Exception e) {
+            log.error("Error interno al crear usuario: {}", e.getMessage(), e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(Map.of("error", e.getMessage()));
+                    .body(Map.of("error", "Error interno del servidor"));
         }
     }
 
@@ -79,17 +89,22 @@ public class UsuarioController {
     @ApiResponse(responseCode = "200", description = "Usuario actualizado correctamente")
     @ApiResponse(responseCode = "404", description = "Usuario no encontrado")
     public ResponseEntity<Object> actualizarUsuario(@PathVariable int id, @RequestBody UsuarioRegistroDTO usuarioDto) {
+        log.debug("Payload recibido para actualizar usuario con ID {}: {}", id, usuarioDto);
         try {
             Model_Usuario actualizado = usuarioService.actualizarUsuarioDesdeDTO(id, usuarioDto);
             UsuarioRespuestaDTO respuesta = usuarioService.convertirARespuestaDTO(actualizado);
+            log.debug("Usuario actualizado correctamente: {}", respuesta);
             return ResponseEntity.ok(respuesta);
         } catch (IllegalStateException e) {
+            log.error("Error de estado al actualizar usuario con ID {}: {}", id, e.getMessage());
             return ResponseEntity.status(HttpStatus.CONFLICT)
                     .body(Map.of("error", e.getMessage()));
         } catch (IllegalArgumentException e) {
+            log.error("Error de argumento al actualizar usuario con ID {}: {}", id, e.getMessage());
             return ResponseEntity.badRequest()
                     .body(Map.of("error", e.getMessage()));
         } catch (Exception e) {
+            log.error("Error interno al actualizar usuario con ID {}: {}", id, e.getMessage(), e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(Map.of("error", "Error interno del servidor"));
         }
