@@ -16,8 +16,8 @@ import java.util.List;
  * Uso @Entity para que JPA mapee esta clase con la tabla correspondiente en la BD.
  */
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
+
+
 @Entity
 @Table(name = "MODEL_PEDIDO")
 public class Model_Pedido {
@@ -64,4 +64,55 @@ public class Model_Pedido {
     )
 
     private List<Model_Producto> productos;
+
+    public Model_Pedido(int idPedido, LocalDateTime fecha, String estado, BigDecimal total, List<Model_Producto> productos) {
+        this.idPedido = idPedido;
+        this.fecha = fecha;
+        this.estado = estado;
+        this.total = total;
+        this.productos = productos;
+    }
+
+    public Model_Pedido() {
+    }
+
+    public int getIdPedido() {
+        return idPedido;
+    }
+
+    public void setIdPedido(int idPedido) {
+        this.idPedido = idPedido;
+    }
+
+    public LocalDateTime getFecha() {
+        return fecha;
+    }
+
+    public void setFecha(LocalDateTime fecha) {
+        this.fecha = fecha;
+    }
+
+    public String getEstado() {
+        return estado;
+    }
+
+    public void setEstado(String estado) {
+        this.estado = estado;
+    }
+
+    public BigDecimal getTotal() {
+        return total;
+    }
+
+    public void setTotal(BigDecimal total) {
+        this.total = total;
+    }
+
+    public List<Model_Producto> getProductos() {
+        return productos;
+    }
+
+    public void setProductos(List<Model_Producto> productos) {
+        this.productos = productos;
+    }
 }
