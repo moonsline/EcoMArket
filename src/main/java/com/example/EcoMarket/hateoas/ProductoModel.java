@@ -9,6 +9,8 @@ public class ProductoModel extends RepresentationModel<ProductoModel> {
     private int precio;
     private int stock;
     private String img;
+    private java.time.LocalDate expirationDate;
+    private String imgNutricional;
 
     public ProductoModel(Model_Producto p) {
         this.id = p.getId();
@@ -16,6 +18,8 @@ public class ProductoModel extends RepresentationModel<ProductoModel> {
         this.precio = p.getPrecio();
         this.stock = p.getStock();
         this.img = p.getImg();
+        this.expirationDate = p.getExpirationDate();
+        this.imgNutricional = p.getImgNutricional();
     }
 
     public int getId() {
@@ -37,4 +41,10 @@ public class ProductoModel extends RepresentationModel<ProductoModel> {
     public String getImg() {
         return img;
     }
+
+    public java.time.LocalDate getExpirationDate() {
+        return expirationDate;
+    }
+
+    public  String getImgNutricional() {return imgNutricional;}
 }

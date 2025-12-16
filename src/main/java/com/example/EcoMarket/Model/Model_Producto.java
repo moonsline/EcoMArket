@@ -32,11 +32,14 @@ public class Model_Producto {
     @Column(name = "EXPIRATION_DATE")
     private LocalDate expirationDate;
 
+    @Column(name = "IMG_NUTRICIONAL")
+    private String imgNutricional;
+
     @JsonIgnore
     @ManyToMany(mappedBy = "productos")
     private List<Model_Pedido> pedidos;
 
-    public Model_Producto(int id, String nombre, int precio, int stock, String img, LocalDate expirationDate, List<Model_Pedido> pedidos) {
+    public Model_Producto(int id, String nombre, int precio, int stock, String img, LocalDate expirationDate, List<Model_Pedido> pedidos, String imgNutricional) {
         this.id = id;
         this.nombre = nombre;
         this.precio = precio;
@@ -44,6 +47,7 @@ public class Model_Producto {
         this.img = img;
         this.expirationDate = expirationDate;
         this.pedidos = pedidos;
+        this.imgNutricional = imgNutricional;
     }
 
     public Model_Producto() {
@@ -103,6 +107,13 @@ public class Model_Producto {
 
     public void setPedidos(List<Model_Pedido> pedidos) {
         this.pedidos = pedidos;
+    }
+
+    public  String getImgNutricional() {
+        return imgNutricional;
+    }
+    public void setImgNutricional(String imgNutricional) {
+        this.imgNutricional = imgNutricional;
     }
 }
 

@@ -18,7 +18,10 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.stream.Collectors;
 
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
+import org.springframework.security.access.prepost.PreAuthorize;
+
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 /**
  * Controlador encargado de manejar las operaciones CRUD de los pedidos.
@@ -41,6 +44,7 @@ public class PedidoController {
     @Operation(summary = "Obtener todos los pedidos", description = "Devuelve la lista completa de pedidos")
     @ApiResponse(responseCode = "200", description = "Lista obtenida correctamente")
     @GetMapping
+    @PreAuthorize("hasAnyRole('ADMIN', 'GERENTE', 'LOGISTICA')")
     public CollectionModel<EntityModel<PedidoModel>> getAllPedidos() {
 
         var pedidos = service.obtenerTodos()
@@ -62,6 +66,7 @@ public class PedidoController {
             @ApiResponse(responseCode = "404", description = "No existe el pedido")
     })
     @GetMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'GERENTE', 'LOGISTICA')")
     public EntityModel<PedidoModel> getPedidoById(@PathVariable int id) {
         return assembler.toModel(service.obtenerPorId(id));
     }
@@ -74,6 +79,7 @@ public class PedidoController {
             @ApiResponse(responseCode = "201", description = "Pedido creado correctamente")
     })
     @PostMapping
+    @PreAuthorize("hasAnyRole('ADMIN', 'GERENTE', 'LOGISTICA')")
     public ResponseEntity<EntityModel<PedidoModel>> crear(@RequestBody Model_Pedido p) {
 
         var pedidoGuardado = service.agregar(p);
@@ -94,6 +100,7 @@ public class PedidoController {
             @ApiResponse(responseCode = "404", description = "Pedido no encontrado")
     })
     @PutMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'GERENTE', 'LOGISTICA')")
     public ResponseEntity<EntityModel<PedidoModel>> actualizar(@PathVariable int id,
                                                                @RequestBody Model_Pedido p) {
 
@@ -110,6 +117,7 @@ public class PedidoController {
             @ApiResponse(responseCode = "404", description = "Pedido no encontrado")
     })
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'GERENTE', 'LOGISTICA')")
     public ResponseEntity<?> eliminar(@PathVariable int id) {
 
         service.eliminar(id);
@@ -126,6 +134,7 @@ public class PedidoController {
             @ApiResponse(responseCode = "404", description = "Pedido o producto no encontrado")
     })
     @PostMapping("/{idPedido}/productos/{idProducto}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'GERENTE', 'LOGISTICA')")
     public ResponseEntity<EntityModel<PedidoModel>> agregarProducto(@PathVariable int idPedido,
                                                                     @PathVariable int idProducto) {
 
@@ -142,6 +151,7 @@ public class PedidoController {
             @ApiResponse(responseCode = "404", description = "Pedido o producto no encontrado")
     })
     @DeleteMapping("/{idPedido}/productos/{idProducto}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'GERENTE', 'LOGISTICA')")
     public ResponseEntity<EntityModel<PedidoModel>> quitarProducto(@PathVariable int idPedido,
                                                                    @PathVariable int idProducto) {
 

@@ -22,20 +22,40 @@ public class ProductoService {
         return repo.findById(id).orElseThrow(() -> new RuntimeException("No encontrado"));
     }
 
-    public Model_Producto agregar(Model_Producto p, MultipartFile img) {
+    public Model_Producto agregar(Model_Producto p, MultipartFile img, MultipartFile imgNutricional) {
         if(img != null && !img.isEmpty()) {
             String fileName = fileStorage.storeFile(img);
             p.setImg(fileName);
         }
+        if (imgNutricional != null && !imgNutricional.isEmpty()) {
+            String fileNameNutri = fileStorage.storeFile(imgNutricional);
+            p.setImgNutricional(fileNameNutri);
+        }
         return repo.save(p);
     }
 
-    public Model_Producto actualizar(int id, Model_Producto p) {
+    public Model_Producto actualizar(int id, Model_Producto p,MultipartFile img, MultipartFile imgNutricional) {
         Model_Producto actual = obtenerPorId(id);
         actual.setNombre(p.getNombre());
         actual.setPrecio(p.getPrecio());
         actual.setStock(p.getStock());
+        actual.setExpirationDate(p.getExpirationDate());
+        if (img != null && !img.isEmpty()) {
+            // opcional: fileStorage.deleteFile(actual.getImg());
+            String fileName = fileStorage.storeFile(img);
+            actual.setImg(fileName);
+        }
+
+        if (imgNutricional != null && !imgNutricional.isEmpty()) {
+            // opcional: fileStorage.deleteFile(actual.getImgNutricional());
+            String fileNameNutri = fileStorage.storeFile(imgNutricional);
+            actual.setImgNutricional(fileNameNutri);
+        }
         return repo.save(actual);
+    }
+
+    public Model_Producto actualizar(int id, Model_Producto p) {
+        return actualizar(id, p, null, null);
     }
 
     public String eliminar(int id) {

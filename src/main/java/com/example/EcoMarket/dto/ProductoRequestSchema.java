@@ -17,4 +17,10 @@ public class ProductoRequestSchema {
             format = "binary"
     )
     public MultipartFile img;
+
+    @Schema(
+            description = "Imagen de información nutricional",
+            type = "string",
+            format = "binary" )
+    public MultipartFile imgNutricional;
 }

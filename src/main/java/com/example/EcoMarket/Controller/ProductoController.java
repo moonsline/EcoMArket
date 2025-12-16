@@ -105,12 +105,13 @@ public class ProductoController {
             )
     )
     @PostMapping(consumes = {"multipart/form-data"})
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'GERENTE')")
     public EntityModel<ProductoModel> crear(
         @RequestPart("producto") Model_Producto p,
-        @RequestPart(value = "img", required = false) MultipartFile img
+        @RequestPart(value = "img", required = false) MultipartFile img,
+        @RequestPart(value = "imgNutricional", required = false) MultipartFile imgNutricional
     ) {
-        return assembler.toModel(service.agregar(p, img));
+        return assembler.toModel(service.agregar(p, img, imgNutricional));
     }
 
     @Operation(summary = "Actualizar un producto", description = "Actualiza los datos de un producto existente")
@@ -119,9 +120,21 @@ public class ProductoController {
             @ApiResponse(responseCode = "404", description = "Producto no encontrado")
     })
     @PutMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'GERENTE')")
     public EntityModel<ProductoModel> actualizar(@PathVariable int id, @RequestBody Model_Producto p) {
         return assembler.toModel(service.actualizar(id, p));
+    }
+
+    // Nuevo endpoint que acepta multipart/form-data para actualizar imagenes
+    @PutMapping(value = "/{id}", consumes = {"multipart/form-data"})
+    @PreAuthorize("hasAnyRole('ADMIN', 'GERENTE')")
+    public EntityModel<ProductoModel> actualizarMultipart(
+            @PathVariable int id,
+            @RequestPart("producto") Model_Producto p,
+            @RequestPart(value = "img", required = false) MultipartFile img,
+            @RequestPart(value = "imgNutricional", required = false) MultipartFile imgNutricional
+    ) {
+        return assembler.toModel(service.actualizar(id, p, img, imgNutricional));
     }
 
     @Operation(summary = "Eliminar un producto", description = "Elimina un producto según su ID")
@@ -130,7 +143,7 @@ public class ProductoController {
             @ApiResponse(responseCode = "404", description = "Producto no encontrado")
     })
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'GERENTE')")
     public String eliminar(@PathVariable int id) {
         return service.eliminar(id);
     }

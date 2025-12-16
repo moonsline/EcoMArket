@@ -83,7 +83,7 @@ public class UsuarioController {
     }
 
 
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN') or (hasRole('USER') and @usuarioService.obtenerPorId(#id).getEmail() == authentication.name)")
     @PutMapping("/{id}")
     @Operation(summary = "Actualizar usuario por ID", description = "Actualiza los datos de un usuario existente")
     @ApiResponse(responseCode = "200", description = "Usuario actualizado correctamente")

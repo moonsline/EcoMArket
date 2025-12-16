@@ -64,6 +64,10 @@ public class SecurityConfig {
                                 "/swagger-ui/**"
                         ).permitAll()
                         .requestMatchers(HttpMethod.POST, "/usuarios").permitAll()
+                        // Permitir explícitamente cualquier método hacia los recursos de uploads (GET, HEAD, etc.)
+                        // permitir acceso directo a la ruta /uploads/** que es la que usa el navegador
+                        .requestMatchers("/uploads/**").permitAll()
+                        .requestMatchers("/productos/uploads/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/productos/**").permitAll() // acceso público
                         // El resto queda protegido
                         .anyRequest().authenticated()
