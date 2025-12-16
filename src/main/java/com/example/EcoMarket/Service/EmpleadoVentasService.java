@@ -5,71 +5,47 @@ import com.example.EcoMarket.Repository.EmpleadoVentasRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class EmpleadoVentasService {
+
     @Autowired
-    EmpleadoVentasRepository empleadoVentasRepository;
+    private EmpleadoVentasRepository repo;
 
-    public String agregarEmpleadoVentas(Model_EmpleadoVentas empleadoVentas){
-        empleadoVentasRepository.save(empleadoVentas);
-        return "Empleado agregado";
+    public Model_EmpleadoVentas agregar(Model_EmpleadoVentas e) {
+        return repo.save(e);
     }
 
-
-    public String listarEmpleadoVentas(){
-        String output ="";
-        for (Model_EmpleadoVentas empleadoVentas : empleadoVentasRepository.findAll()){
-            output += "ID Empleado: " + empleadoVentas.getIdEmpleado()+ "\n";
-            output += "Nombre Empleado: " + empleadoVentas.getNombre()+ "\n";
-            output += "Email Empleado: " + empleadoVentas.getEmail()+ "\n";
-            output += "Password empleado: "+ empleadoVentas.getPassword()+ "\n";
-            output += "Rol Empleado: "+ empleadoVentas.getRol()+ "\n";
-        }
-        if (output.isEmpty()){
-            return "No se encontro el empleado";
-        }else{
-            return output;
-        }
+    public List<Model_EmpleadoVentas> obtenerTodos() {
+        return repo.findAll();
     }
 
-    public String obtenerEmpleadoVentas(int idEmpleado){
-        String output = "";
-        if (empleadoVentasRepository.existsById(idEmpleado)){
-            Model_EmpleadoVentas empleadoVentas = empleadoVentasRepository.findById(idEmpleado).get();
-            output += "ID Empleado: " + empleadoVentas.getIdEmpleado()+ "\n";
-            output += "Nombre Empleado: " + empleadoVentas.getNombre()+ "\n";
-            output += "Email Empleado: " + empleadoVentas.getEmail()+ "\n";
-            output += "Password empleado: "+ empleadoVentas.getPassword()+ "\n";
-            output += "Rol Empleado: "+ empleadoVentas.getRol()+ "\n";
-            return output;
-        }else{
-            return "No se encontro el empleado";
+    public Model_EmpleadoVentas obtenerPorId(int id) {
+        return repo.findById(id)
+                .orElseThrow(() -> new RuntimeException("Empleado no encontrado"));
+    }
+
+    public Model_EmpleadoVentas actualizar(int id, Model_EmpleadoVentas nuevo) {
+        Model_EmpleadoVentas actual = obtenerPorId(id);
+        actual.setNombre(nuevo.getNombre());
+        actual.setEmail(nuevo.getEmail());
+        actual.setPassword(nuevo.getPassword());
+        actual.setRol(nuevo.getRol());
+        return repo.save(actual);
+    }
+
+    public String eliminar(int id) {
+        if (repo.existsById(id)) {
+            repo.deleteById(id);
+            return "Empleado eliminado correctamente";
+        } else {
+            return "Empleado no encontrado";
         }
     }
 
-    public String eliminarEmpleadoVentas(int idEmpleado){
-        if (empleadoVentasRepository.existsById(idEmpleado)){
-            empleadoVentasRepository.deleteById(idEmpleado);
-            return "Empleado eliminado";
-        }else{
-            return "No se encontro el empleado";
-        }
+    public void setRepo(EmpleadoVentasRepository r) {
+        this.repo = r;
     }
-
-    public String actualizarEmpleadoVentas(int idEmpleado, Model_EmpleadoVentas empleadoVentas){
-        if (empleadoVentasRepository.existsById(idEmpleado)){
-            Model_EmpleadoVentas buscado = empleadoVentasRepository.findById(idEmpleado).get();
-            buscado.setNombre(empleadoVentas.getNombre());
-            buscado.setEmail(empleadoVentas.getEmail());
-            buscado.setPassword(empleadoVentas.getPassword());
-            buscado.setRol(empleadoVentas.getRol());
-            empleadoVentasRepository.save(buscado);
-            return "Empleado actualzado";
-        }else{
-            return "No se encontro el empleado";
-        }
-    }
-
-
-
 }
+

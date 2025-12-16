@@ -1,88 +1,62 @@
 package com.example.EcoMarket.Service;
 
-
 import com.example.EcoMarket.Model.Model_Administrador;
 import com.example.EcoMarket.Repository.AdministradorRepository;
-import com.example.EcoMarket.Repository.ClienteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class AdministradorService {
+
     @Autowired
-    AdministradorRepository administradorRepository;
-    @Autowired
-    private ClienteRepository clienteRepository;
+    private AdministradorRepository adminRepo;
 
-    public String agregarAdministrador(Model_Administrador administrador){
-        administradorRepository.save(administrador);
-        return "Adminstrador agregado";
+    public Model_Administrador agregarAdministrador(Model_Administrador admin) {
+        return adminRepo.save(admin);
+    }
+    public List<Model_Administrador> obtenerTodos() {
+        return adminRepo.findAll();
+    }
+    public Model_Administrador obtenerPorId(int id) {
+        return adminRepo.findById(id)
+                .orElseThrow(() -> new RuntimeException("Administrador no encontrado"));
+    }
+    public Model_Administrador actualizarAdministrador(int id, Model_Administrador admin) {
+        Model_Administrador existente = obtenerPorId(id);
+        existente.setNombre(admin.getNombre());
+        existente.setEmail(admin.getEmail());
+        existente.setPassword(admin.getPassword());
+        existente.setRol(admin.getRol());
+        return adminRepo.save(existente);
     }
 
-    public String listaAdminstrador(){
-        String output = "";
-        for (Model_Administrador administrador: administradorRepository.findAll()){
-            output += "ID Administrador: " + administrador.getIdAdmin()+"\n";
-            output += "Nombre Adminstrador: " + administrador.getNombre()+"\n";
-            output += "Email Adminstrador : " + administrador.getEmail()+"\n";
-            output += "Password Administrador: " + administrador.getPassword()+"\n";
-            output += "Rol Adminstrador: " + administrador.getRol()+"\n";
-        }
-        if (output.isEmpty()){
-            return "No se encontro el adminstrador";
-        }else{
-            return output;
-        }
-    }
-
-    public String obtenerAdminstrador(int idAdmin){
-        String output ="";
-        if (administradorRepository.existsById(idAdmin)){
-            Model_Administrador administrador = administradorRepository.findById(idAdmin).get();
-            output += "ID Administrador: " + administrador.getIdAdmin()+ "\n";
-            output += "Nombre Adminstrador: " + administrador.getNombre()+"\n";
-            output += "Email Adminstrador : " + administrador.getEmail()+"\n";
-            output += "Password Administrador: " + administrador.getPassword()+"\n";
-            output += "Rol Adminstrador: " + administrador.getRol()+"\n";
-            return output;
-        }else{
-            return "No se encontro el administrador";
+    public String eliminarAdministrador(int id) {
+        if (adminRepo.existsById(id)) {
+            adminRepo.deleteById(id);
+            return "Administrador eliminado correctamente";
+        } else {
+            return "Administrador no encontrado";
         }
     }
 
-    public String eliminarAdminstrador(int idAdmin){
-        if (administradorRepository.existsById(idAdmin)){
-            administradorRepository.deleteById(idAdmin);
-            return "Administrador eliminado";
-        }else{
-            return "No se encontro el administrador";
-        }
+    // para pruebas si necesitamos otra creacion de isntancias
+    public void setAdminRepo(AdministradorRepository repo) {
+        this.adminRepo = repo;
     }
-
-    public String actualizarAdministrador(int idAdmin, Model_Administrador admin){
-        if (administradorRepository.existsById(idAdmin)){
-            Model_Administrador buscado = administradorRepository.findById(idAdmin).get();
-            buscado.setNombre(admin.getNombre());
-            buscado.setEmail(admin.getEmail());
-            buscado.setPassword(admin.getPassword());
-            buscado.setRol(admin.getRol());
-            administradorRepository.save(buscado);
-            return "Administrador actualizado";
-        }else{
-            return "No se encontro el adminstrador";
-        }
-    }
-
-
-
-
-
-
-
-
-
-
-
-
-
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+

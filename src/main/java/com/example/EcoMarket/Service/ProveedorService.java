@@ -1,67 +1,47 @@
 package com.example.EcoMarket.Service;
 
-
 import com.example.EcoMarket.Model.Model_Proveedor;
 import com.example.EcoMarket.Repository.ProveedorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class ProveedorService {
 
     @Autowired
-    ProveedorRepository proveedorRepository;
+    private ProveedorRepository proveedorRepository;
 
-    public String agregarProveedor(Model_Proveedor proveedor) {
-        proveedorRepository.save(proveedor);
-        return "Proveedor agregado";
+    public Model_Proveedor agregarProveedor(Model_Proveedor proveedor) {
+        return proveedorRepository.save(proveedor);
     }
 
-    public String listarProveedor() {
-        String output = "";
-        for (Model_Proveedor proveedor : proveedorRepository.findAll()) {
-            output += "ID proveedor: " +proveedor.getId()+ "\n";
-            output += "Nombre proveedor: " +proveedor.getNombre()+ "\n";
-            output += "Contacto proveedor: " +proveedor.getContacto()+ "\n";
-        }
-        if(output.isEmpty()) {
-            return "No se encontro el proveedor";
-        }else {
-        return output;
-        }
+    public List<Model_Proveedor> obtenerTodos() {
+        return proveedorRepository.findAll();
     }
 
-    public String obtenerProveedor(int id) {
-        String output = "";
-        if(proveedorRepository.existsById(id)) {
-            Model_Proveedor proveedor = proveedorRepository.findById(id).get();
-            output += "ID proveedor: " +proveedor.getId()+ "\n";
-            output += "Nombre proveedor: " +proveedor.getNombre()+ "\n";
-            output += "Contacto proveedor: " +proveedor.getContacto()+ "\n";
-            return output;
-        }else {
-            return "No se encontro el proveedor";
-        }
+    public Model_Proveedor obtenerPorId(int id) {
+        return proveedorRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Proveedor no encontrado con ID: " + id));
     }
 
     public String eliminarProveedor(int id) {
-        if(proveedorRepository.existsById(id)) {
+        if (proveedorRepository.existsById(id)) {
             proveedorRepository.deleteById(id);
-            return "Proveedor eliminado";
-        }else{
-            return "No se encontro el proveedor";
+            return "Proveedor eliminado correctamente";
+        } else {
+            return "Proveedor no encontrado";
         }
     }
 
-    public String actualizarProveedor(int id, Model_Proveedor proveedor) {
-        if(proveedorRepository.existsById(id)) {
-            Model_Proveedor buscado = proveedorRepository.findById(id).get();
-            buscado.setNombre(proveedor.getNombre());
-            buscado.setContacto(proveedor.getContacto());
-            proveedorRepository.save(buscado);
-            return "Proveedor actualizado";
-        }else{
-            return "No se encontro el proveedor";
-        }
+    public Model_Proveedor actualizarProveedor(int id, Model_Proveedor proveedor) {
+        Model_Proveedor existente = proveedorRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Proveedor no encontrado con ID: " + id));
+
+        existente.setNombre(proveedor.getNombre());
+        existente.setContacto(proveedor.getContacto());
+
+        return proveedorRepository.save(existente);
     }
 }

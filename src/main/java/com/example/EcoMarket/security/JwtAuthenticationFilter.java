@@ -1,0 +1,114 @@
+package com.example.EcoMarket.security;
+
+import com.example.EcoMarket.utils.JwtUtil;
+import com.example.EcoMarket.Service.CustomUserDetailsService;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
+import org.springframework.stereotype.Component;
+import org.springframework.web.filter.OncePerRequestFilter;
+
+import java.io.IOException;
+
+// Añadidos para logging
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+/**
+ * Este filtro se ejecuta antes de cada request.
+ * Revisa si llega un token JWT en la cabecera "Authorization".
+ * Si está presente y es válido, autentico al usuario en el contexto de Spring.
+ */
+@Component
+public class JwtAuthenticationFilter extends OncePerRequestFilter {
+
+    // Logger para debug
+    private static final Logger logger = LoggerFactory.getLogger(JwtAuthenticationFilter.class);
+
+    @Autowired
+    private JwtUtil jwtUtil;
+
+    @Autowired
+    private CustomUserDetailsService userDetailsService;
+
+    @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
+        String path = request.getServletPath();
+        // No filtrar endpoints de auth (login/register). También ignorar preflight OPTIONS.
+        return path.startsWith("/auth") || "OPTIONS".equalsIgnoreCase(request.getMethod());
+    }
+
+    @Override
+    protected void doFilterInternal(
+            HttpServletRequest request,
+            HttpServletResponse response,
+            FilterChain filterChain
+    ) throws ServletException, IOException {
+
+        // Obtengo el token de la cabecera Authorization
+        String header = request.getHeader("Authorization");
+        String token = null;
+        String email = null;
+
+        // Ejemplo del header esperado:
+        // Authorization: Bearer eyJhbGciOi...
+        if (header != null && header.startsWith("Bearer ")) {
+            token = header.substring(7); // saco el "Bearer "
+            try {
+                // obtengo el email guardado en el token; puede lanzar JwtException
+                email = jwtUtil.getEmailFromToken(token);
+            } catch (Exception e) {
+                // Si el token está mal formado o no es válido, no interrumpimos la petición.
+                // Logueamos en DEBUG y dejamos continuar sin autenticar.
+                logger.debug("JWT parse/validation failed", e);
+                email = null;
+            }
+        }
+
+        // Si tengo email y aún no hay un contexto de autenticación
+        if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+
+            try {
+                // Cargo los detalles del usuario desde la BD
+                UserDetails userDetails = userDetailsService.loadUserByUsername(email);
+
+                // Verifico el token (validateToken puede lanzar excepciones internamente)
+                boolean valid;
+                try {
+                    valid = jwtUtil.validateToken(token);
+                } catch (Exception e) {
+                    logger.debug("JWT validation failed", e);
+                    valid = false;
+                }
+
+                if (valid) {
+
+                    // Creo la autenticación basada en el usuario cargado
+                    UsernamePasswordAuthenticationToken authentication =
+                            new UsernamePasswordAuthenticationToken(
+                                    userDetails, null, userDetails.getAuthorities()
+                            );
+
+                    authentication.setDetails(
+                            new WebAuthenticationDetailsSource().buildDetails(request)
+                    );
+
+                    // Finalmente: asigno la autenticación al contexto de Spring
+                    SecurityContextHolder.getContext().setAuthentication(authentication);
+                }
+            } catch (Exception e) {
+                // En caso de que cargar userDetails falle, no queremos interrumpir peticiones públicas.
+                logger.debug("Failed loading user details or setting authentication", e);
+            }
+        }
+
+        // Continuar con el resto del flujo
+        filterChain.doFilter(request, response);
+    }
+}
